@@ -19,7 +19,7 @@ async function scanDirDeep(path) {
     return paths;
 }
 
-const filePaths = await scanDirDeep(pathJoin(location.pathname, "src/"));// ["src/main.ink", "src/lessons/lesson-01-the-flow.ink"]//
+const filePaths = ["src/main.ink", "src/lessons/lesson-01-the-flow.ink"]//await scanDirDeep(pathJoin(location.pathname, "src/"));
 const files = {};
 for (const path of filePaths) {
   files[path.split("src/", 2)[1]] = await fetch(path, {
