@@ -1,21 +1,30 @@
 INCLUDE lessons/lesson-01-the-flow.ink
 
+VAR SHORTCUTS_ENABLED = true
+
 -> ToC
 
 == TODO ==
-Not done yet.
--> END
+WIP - work in progress (i.e. not done yet)
+-> DONE
 
 == ToC ==
 Table of Contents
 
-    * [Introduction]
-    -> Introduction
-    * [Lesson 1: The Flow]
-    -> Lesson_01_The_Flow
-    * [Lesson 2: Choices]
++ [Introduction]
+-> Introduction
++ [Lesson 1: The Flow]
+-> Lesson_01_The_Flow
++ [Lesson 2: Weave]
++ [Lesson 3: Varying Choices]
++ [Lesson 4: Branching The Flow (exercise)]
++ [Lesson 5: Variables]
++ [Lesson 6: Advanced Content]
++ [Lesson 7: Advanced Choices]
+
 -
--> TODO
+<-TODO
+->ToC
 
 == Introduction ==
 
@@ -60,6 +69,7 @@ Lesson 5.3: Math & Logic - "+, -, *, /, mod(%), and, or, not, ==, !=, >=, <=, <,
 Lesson 5.4: Knots as variables - knot read count
 
 Lesson 6: Advanced Content
+Lesson 6.0: Comments
 Lesson 6.1: Glue
 Lesson 6.2: Variable text
 Lesson 6.3: Conditional text
@@ -82,6 +92,6 @@ Math: POW, RANDOM, MIN, MAX
 
 game queries and functions
 
-comments, tags, includes
+tags, includes
 
 */
