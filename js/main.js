@@ -1,65 +1,36 @@
-const pathJoin = (...parts) => parts.join("/")
-    .replace(/\/+/g, "/").replace(/\/[^/]+\/\.\.\//g, "/");
+import { loadManifest } from "./load.js";
+import { compileStory, executeCommandFromTag } from "./story.js";
+import buildInCode from "./build-in.js";
+import customCode from "../src/custom.js";
 
-async function scanDirDeep(path) {
-    const paths = [];
-    try {
-        const srcDoc = new DOMParser().parseFromString(await (await fetch(path)).text(), "text/html");
-        for (const item of srcDoc.querySelectorAll("ul > li > a[href]")) {
-            const itemPath = item.getAttribute("href");
-            if (itemPath.endsWith(".ink")) {
-                paths.push(pathJoin(path, itemPath));
-            } else {
-                paths.push(...(await scanDirDeep(pathJoin(path, itemPath))));
-            }
-        }
-    } catch (e) {
-        console.error(e);
-    }
-    return paths;
-}
+const manifest = await loadManifest();
 
-const filePaths = ["src/main.ink", "src/lessons/lesson-01-the-flow.ink"]//await scanDirDeep(pathJoin(location.pathname, "src/"));
 const files = {};
-for (const path of filePaths) {
-  files[path.split("src/", 2)[1]] = await fetch(path, {
-    cache: "no-cache",
+for (const {storyPath, downloadPath} of manifest.files) {
+  files[storyPath] = await fetch(downloadPath, {
+    cache: 'no-cache',
   }).then((response) => response.text());
 }
 
-if (typeof files["main.ink"] !== 'string') {
-    alert("Abort. Missing \"main.ink\" file!");
-    throw new Error("Abort. Missing \"main.ink\" file!");
+if (typeof files['main.ink'] !== 'string') {
+    alert('Abort. Missing "main.ink" file!');
+    throw new Error('Abort. Missing "main.ink" file!');
 }
 
-const fileHandler = new inkjs.JsonFileHandler(files);
+if (typeof customCode === 'function') {
+  customCode();
+}
+
+buildInCode();
 
 // Create ink story from the content using inkjs
-var story = new inkjs.Compiler(files["main.ink"], { fileHandler }).Compile();
+const story = compileStory(files['main.ink'], { fileHandler: new inkjs.JsonFileHandler(files) });
 
-var savePoint = "";
-
-let savedTheme;
-let globalTagTheme;
-
+executeCommandFromTag(story, 'theme set auto');
 // Global tags - those at the top of the ink file
-// We support:
-//  # theme: dark
-//  # author: Your Name
-var globalTags = story.globalTags;
-if (globalTags) {
-  for (var i = 0; i < story.globalTags.length; i++) {
-    var globalTag = story.globalTags[i];
-    var splitTag = splitPropertyTag(globalTag);
-
-    // THEME: dark
-    if (splitTag && splitTag.property == "theme") {
-      globalTagTheme = splitTag.val;
-    } // author: Your Name
-    else if (splitTag && splitTag.property == "author") {
-      var byline = document.querySelector(".byline");
-      byline.innerHTML = "by " + splitTag.val;
-    }
+if (story.globalTags != null) {
+  for (const tagString of story.globalTags) {
+    executeCommandFromTag(story, tagString);
   }
 }
 
@@ -67,12 +38,22 @@ var storyContainer = document.querySelector("#story");
 var outerScrollContainer = document.querySelector(".outerContainer");
 
 // page features setup
-setupTheme(globalTagTheme);
-var hasSave = loadSavePoint();
-setupButtons(hasSave);
+let rewindEl = document.getElementById("rewind");
+if (rewindEl) {
+  rewindEl.addEventListener("click", function (event) {
+    removeAll("p");
+    removeAll("img");
+    restart();
+  });
+}
 
-// Set initial save point
-savePoint = story.state.toJson();
+const themeSwitchEl = document.getElementById("theme-switch");
+if (themeSwitchEl) {
+  themeSwitchEl.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    window.localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+  });
+}
 
 // Kick off the start of the story!
 continueStory(true);
@@ -80,7 +61,6 @@ continueStory(true);
 // Main story processing function. Each time this is called it generates
 // all the next content up as far as the next set of choices.
 function continueStory(firstTime) {
-  var paragraphIndex = 0;
   var delay = 0.0;
 
   // Don't over-scroll past new content
@@ -88,75 +68,21 @@ function continueStory(firstTime) {
 
   // Generate story text - loop through available content
   while (story.canContinue) {
+    // Create paragraph element (initially hidden)
+    let paragraphElement = document.createElement("p");
     // Get ink to generate the next paragraph
-    var paragraphText = story.Continue();
-    var tags = story.currentTags;
+    let text = story.Continue();
+    paragraphElement.innerHTML = text;
 
     // Any special tags included with this line
-    var customClasses = [];
-    for (var i = 0; i < tags.length; i++) {
-      var tag = tags[i];
+    for (const tag of story.currentTags) {
+      executeCommandFromTag(story, tag, {$element: paragraphElement, $text: text});
 
-      // Detect tags of the form "X: Y". Currently used for IMAGE and CLASS but could be
-      // customised to be used for other things too.
-      var splitTag = splitPropertyTag(tag);
-      splitTag.property = splitTag.property.toUpperCase();
-
-      // AUDIO: src
-      if (splitTag && splitTag.property == "AUDIO") {
-        if ("audio" in this) {
-          this.audio.pause();
-          this.audio.removeAttribute("src");
-          this.audio.load();
-        }
-        this.audio = new Audio(splitTag.val);
-        this.audio.play();
-      } // AUDIOLOOP: src
-      else if (splitTag && splitTag.property == "AUDIOLOOP") {
-        if ("audioLoop" in this) {
-          this.audioLoop.pause();
-          this.audioLoop.removeAttribute("src");
-          this.audioLoop.load();
-        }
-        this.audioLoop = new Audio(splitTag.val);
-        this.audioLoop.play();
-        this.audioLoop.loop = true;
-      }
-
-      // IMAGE: src
-      if (splitTag && splitTag.property == "IMAGE") {
-        var imageElement = document.createElement("img");
-        imageElement.src = splitTag.val;
-        storyContainer.appendChild(imageElement);
-
-        imageElement.onload = () => {
-          console.log(`scrollingto ${previousBottomEdge}`);
-          scrollDown(previousBottomEdge);
-        };
-
-        showAfter(delay, imageElement);
-        delay += 200.0;
-      } // LINK: url
-      else if (splitTag && splitTag.property == "LINK") {
-        window.location.href = splitTag.val;
-      } // LINKOPEN: url
-      else if (splitTag && splitTag.property == "LINKOPEN") {
-        window.open(splitTag.val);
-      } // BACKGROUND: src
-      else if (splitTag && splitTag.property == "BACKGROUND") {
-        outerScrollContainer.style.backgroundImage =
-          "url(" + splitTag.val + ")";
-      } // CLASS: className
-      else if (splitTag && splitTag.property == "CLASS") {
-        customClasses.push(splitTag.val);
-      } // CLEAR - removes all existing content.
+      // CLEAR - removes all existing content.
       // RESTART - clears everything and restarts the story from the beginning
-      else if (tag == "CLEAR" || tag == "RESTART") {
+      if (tag == "CLEAR" || tag == "RESTART") {
         removeAll("p");
         removeAll("img");
-
-        // Comment out this line if you want to leave the header visible when clearing
-        setVisible(".header", false);
 
         if (tag == "RESTART") {
           restart();
@@ -165,20 +91,11 @@ function continueStory(firstTime) {
       }
     }
 
-    // Check if paragraphText is empty
-    if (paragraphText.trim().length == 0) {
+    // Check if text is empty
+    if (text.trim().length == 0) {
       continue; // Skip empty paragraphs
     }
-
-    // Create paragraph element (initially hidden)
-    var paragraphElement = document.createElement("p");
-    paragraphElement.innerHTML = paragraphText;
     storyContainer.appendChild(paragraphElement);
-
-    // Add any custom classes derived from ink tags
-    for (var i = 0; i < customClasses.length; i++) {
-      paragraphElement.classList.add(customClasses[i]);
-    }
 
     // Fade in paragraph after a short delay
     showAfter(delay, paragraphElement);
@@ -186,37 +103,15 @@ function continueStory(firstTime) {
   }
 
   // Create HTML choices from ink choices
-  story.currentChoices.forEach(function (choice) {
+  story.currentChoices.forEach(choice => {
     // Create paragraph with anchor element
-    var choiceTags = choice.tags;
-    var customClasses = [];
-    var isClickable = true;
-    for (var i = 0; i < choiceTags.length; i++) {
-      var choiceTag = choiceTags[i];
-      var splitTag = splitPropertyTag(choiceTag);
-      splitTag.property = splitTag.property.toUpperCase();
-
-      if (choiceTag.toUpperCase() == "UNCLICKABLE") {
-        isClickable = false;
-      }
-
-      if (splitTag && splitTag.property == "CLASS") {
-        customClasses.push(splitTag.val);
-      }
-    }
-
-    var choiceParagraphElement = document.createElement("p");
+    const choiceParagraphElement = document.createElement("p");
     choiceParagraphElement.classList.add("choice");
-
-    for (var i = 0; i < customClasses.length; i++) {
-      choiceParagraphElement.classList.add(customClasses[i]);
+    choiceParagraphElement.innerHTML = `<a href='#'>${choice.text}</a>`;
+    for (const choiceTag of choice.tags) {
+      executeCommandFromTag(story, choiceTag, {$element: choiceParagraphElement, $text: choice.text, $choice: choice});
     }
 
-    if (isClickable) {
-      choiceParagraphElement.innerHTML = `<a href='#'>${choice.text}</a>`;
-    } else {
-      choiceParagraphElement.innerHTML = `<span class='unclickable'>${choice.text}</span>`;
-    }
     storyContainer.appendChild(choiceParagraphElement);
 
     // Fade choice in after a short delay
@@ -224,9 +119,9 @@ function continueStory(firstTime) {
     delay += 200.0;
 
     // Click on choice
-    if (isClickable) {
-      var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
-      choiceAnchorEl.addEventListener("click", function (event) {
+    const choiceAnchorEl = choiceParagraphElement.querySelector('a');
+    if (choiceAnchorEl) {
+      choiceAnchorEl.addEventListener("click", event => {
         // Don't follow <a> link
         event.preventDefault();
 
@@ -241,9 +136,6 @@ function continueStory(firstTime) {
         // Tell the story where to go next
         story.ChooseChoiceIndex(choice.index);
 
-        // This is where the save button will save from
-        savePoint = story.state.toJson();
-
         // Aaand loop
         continueStory();
       });
@@ -253,19 +145,14 @@ function continueStory(firstTime) {
   // Unset storyContainer's height, allowing it to resize itself
   storyContainer.style.height = "";
 
-  if (!firstTime) scrollDown(previousBottomEdge);
+  if (!firstTime) {
+    scrollDown(previousBottomEdge);
+  }
 }
 
 function restart() {
   story.ResetState();
-
-  setVisible(".header", true);
-
-  // set save point to here
-  savePoint = story.state.toJson();
-
   continueStory(true);
-
   outerScrollContainer.scrollTo(0, 0);
 }
 
@@ -338,123 +225,5 @@ function removeAll(selector) {
   for (var i = 0; i < allElements.length; i++) {
     var el = allElements[i];
     el.parentNode.removeChild(el);
-  }
-}
-
-// Used for hiding and showing the header when you CLEAR or RESTART the story respectively.
-function setVisible(selector, visible) {
-  var allElements = storyContainer.querySelectorAll(selector);
-  for (var i = 0; i < allElements.length; i++) {
-    var el = allElements[i];
-    if (!visible) el.classList.add("invisible");
-    else el.classList.remove("invisible");
-  }
-}
-
-// Helper for parsing out tags of the form:
-//  # PROPERTY: value
-// e.g. IMAGE: source path
-function splitPropertyTag(tag) {
-  var propertySplitIdx = tag.indexOf(":");
-  if (propertySplitIdx != null) {
-    var property = tag.substr(0, propertySplitIdx).trim();
-    var val = tag.substr(propertySplitIdx + 1).trim();
-    return {
-      property: property,
-      val: val,
-    };
-  }
-
-  return null;
-}
-
-// Loads save state if exists in the browser memory
-function loadSavePoint() {
-  try {
-    let savedState = window.localStorage.getItem("save-state");
-    if (savedState) {
-      story.state.LoadJson(savedState);
-      return true;
-    }
-  } catch (e) {
-    console.debug("Couldn't load save state");
-  }
-  return false;
-}
-
-// Detects which theme (light or dark) to use
-function setupTheme(globalTagTheme) {
-  // load theme from browser memory
-  var savedTheme;
-  try {
-    savedTheme = window.localStorage.getItem("theme");
-  } catch (e) {
-    console.debug("Couldn't load saved theme");
-  }
-
-  // Check whether the OS/browser is configured for dark mode
-  var browserDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  if (
-    savedTheme === "dark" ||
-    (savedTheme == undefined && globalTagTheme === "dark") ||
-    (savedTheme == undefined && globalTagTheme == undefined && browserDark)
-  ) {
-    document.body.classList.add("dark");
-  }
-}
-
-// Used to hook up the functionality for global functionality buttons
-function setupButtons(hasSave) {
-  let rewindEl = document.getElementById("rewind");
-  if (rewindEl) {
-    rewindEl.addEventListener("click", function (event) {
-      removeAll("p");
-      removeAll("img");
-      setVisible(".header", false);
-      restart();
-    });
-  }
-
-  let saveEl = document.getElementById("save");
-  if (saveEl) {
-    saveEl.addEventListener("click", function (event) {
-      try {
-        window.localStorage.setItem("save-state", savePoint);
-        document.getElementById("reload").removeAttribute("disabled");
-        window.localStorage.setItem(
-          "theme",
-          document.body.classList.contains("dark") ? "dark" : ""
-        );
-      } catch (e) {
-        console.warn("Couldn't save state");
-      }
-    });
-  }
-
-  let reloadEl = document.getElementById("reload");
-  if (!hasSave) {
-    reloadEl.setAttribute("disabled", "disabled");
-  }
-  reloadEl.addEventListener("click", function (event) {
-    if (reloadEl.getAttribute("disabled")) return;
-
-    removeAll("p");
-    removeAll("img");
-    try {
-      let savedState = window.localStorage.getItem("save-state");
-      if (savedState) story.state.LoadJson(savedState);
-    } catch (e) {
-      console.debug("Couldn't load save state");
-    }
-    continueStory(true);
-  });
-
-  let themeSwitchEl = document.getElementById("theme-switch");
-  if (themeSwitchEl) {
-    themeSwitchEl.addEventListener("click", function (event) {
-      document.body.classList.add("switched");
-      document.body.classList.toggle("dark");
-    });
   }
 }

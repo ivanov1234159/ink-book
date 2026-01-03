@@ -1,72 +1,28 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,700|Quattrocento:700');
 
+:root {
+    --editor-neutral-color: black;
+    --editor-neutral-bgcolor: white;
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     font-weight: lighter;
-    background: white;
+    color: var(--editor-neutral-color);
+    background: var(--editor-neutral-bgcolor);
     overflow: hidden;
-}
 
-@media screen and (prefers-reduced-motion: no-preference) {
-    body.switched {
+    @media screen and (prefers-reduced-motion: no-preference) {
         transition: color 0.6s, background-color 0.6s;
     }
-}
+    /* 
+        Dark Theme (Added in Inky 0.10.0)
+        # theme: dark
+    */
 
-h1,
-h2 {
-    text-align: center;
-    font-family: "Quattrocento", Georgia, 'Times New Roman', Times, serif;
-    margin: 0;
-    padding: 0;
-}
-
-h1 {
-    font-size: 30pt;
-    margin-bottom: 10px;
-}
-
-h2 {
-    font-size: 14pt;
-    font-style: italic;
-    font-family: sans-serif;
-    font-weight: lighter;
-    color: #BBB;
-}
-
-.header {
-    padding-top: 3em;
-    padding-bottom: 3em;
-}
-
-/*
-  Built-in class:
-    # author: Name
-*/
-.byline {
-    font-style: italic;
-}
-
-.written-in-ink {
-    z-index: 3;
-    font-size: 9pt;
-    font-family: sans-serif;
-    text-align: center;
-    font-weight: 700;
-    position: fixed;
-    display: block;
-    width: 100%;
-    background: white;
-    margin: 0;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    height: 14px;
-    top: 0;
-}
-
-@media screen and (prefers-reduced-motion: no-preference) {
-    .written-in-ink {
-        transition: color 0.6s, background 0.6s;
+    &.dark {
+        --editor-neutral-color: white;
+        --editor-neutral-bgcolor: black;
     }
 }
 
@@ -88,129 +44,156 @@ h2 {
     margin-top: 24px;
     background-size: cover;
     background-repeat: no-repeat;
-}
 
-@media screen and (max-width: 980px) {
-    .outerContainer {
+    @media screen and (max-width: 980px) {
         margin-top: 44px;
         background-size: cover;
         background-repeat: no-repeat;
     }
 }
 
-.container {
+.editor-preview {
     display: block;
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     padding-top: 4em;
-    background: white;
-}
+    background: var(--editor-neutral-bgcolor);
 
-@media screen and (prefers-reduced-motion: no-preference) {
-    .switched .container {
+    .hide {
+        opacity: 0.0;
+    }
+
+    .invisible {
+        display: none;
+    }
+
+    > * {
+        opacity: 1.0;
+
+        @media screen and (prefers-reduced-motion: no-preference) {
+            transition: opacity 1.0s;
+        }
+    }
+
+    h1,
+    h2 {
+        text-align: center;
+        font-family: "Quattrocento", Georgia, 'Times New Roman', Times, serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        font-size: 30pt;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 14pt;
+        font-style: italic;
+        font-family: sans-serif;
+        font-weight: lighter;
+        color: #BBB;
+
+        .dark & {
+            color: #666;
+        }
+    }
+
+    @media screen and (prefers-reduced-motion: no-preference) {
         transition: background-color 0.6s;
     }
-}
 
-p {
-    font-size: 13pt;
-    color: #888;
-    line-height: 1.7em;
-    font-weight: lighter;
-}
+    p {
+        font-size: 13pt;
+        color: #888;
+        line-height: 1.7em;
+        font-weight: lighter;
+    }
 
-a {
-    font-weight: 700;
-    color: #b97c2c;
-    font-family: sans-serif;
-    text-decoration: none;
-}
-
-.unclickable {
-    font-weight: 700;
-    color: #4f3411;
-    font-family: sans-serif;
-    text-decoration: none;
-    cursor: not-allowed;
-}
-
-a:hover {
-    color: black;
-}
-
-@media screen and (prefers-reduced-motion: no-preference) {
     a {
-        transition: color 0.6s;
+        font-weight: 700;
+        color: #b97c2c;
+        font-family: sans-serif;
+        text-decoration: none;
+        &:hover {
+            color: var(--editor-neutral-color);
+        }
+
+        @media screen and (prefers-reduced-motion: no-preference) {
+            transition: color 0.6s;
+            &:hover {
+                transition: color 0.1s;
+            }
+        }
+
+        .dark & {
+            color: #cc8f1a;
+
+            @media screen and (prefers-reduced-motion: no-preference) {
+                transition: color 0.6s;
+            }
+        }
     }
 
-    a:hover {
-        transition: color 0.1s;
+    .unclickable {
+        font-weight: 700;
+        color: #4f3411;
+        font-family: sans-serif;
+        text-decoration: none;
+        cursor: not-allowed;
+
+        .dark & {
+            color: #c4af87;
+        }
     }
-}
 
-strong {
-    color: black;
-    font-weight: bold;
-}
-
-img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-}
-
-.container .hide {
-    opacity: 0.0;
-}
-
-.container .invisible {
-    display: none;
-}
-
-.container>* {
-    opacity: 1.0;
-}
-
-@media screen and (prefers-reduced-motion: no-preference) {
-    .container>* {
-        transition: opacity 1.0s;
+    strong {
+        color: var(--editor-neutral-color);
+        font-weight: bold;
     }
-}
 
-/*
-  Class applied to all choices
-  (Will always appear inside <p> element by default.)
-*/
-.choice {
-    text-align: center;
-    line-height: 1.7em;
-}
+    img {
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+    }
 
-/* 
-  Class applied to first choice
-*/
-:not(.choice)+.choice {
-    padding-top: 1em;
-}
+    /*
+        Class applied to all choices
+        (Will always appear inside <p> element by default.)
+    */
+    .choice {
+        text-align: center;
+        line-height: 1.7em;
+    }
 
-/*
-  Class applied to choice links
-*/
-.choice a, .choice span {
-    font-size: 15pt;
-}
+    /* 
+        Class applied to first choice
+    */
+    :not(.choice) + .choice {
+        padding-top: 1em;
+    }
 
-/* 
-  Built-in class:
-    The End # CLASS: end
-*/
-.end {
-    text-align: center;
-    font-weight: bold;
-    color: black;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    /*
+        Class applied to choice links
+    */
+    .choice a, .choice span {
+        font-size: 15pt;
+    }
+
+    /* 
+        Built-in class:
+        The End # CLASS: end
+    */
+    .end {
+        text-align: center;
+        font-weight: bold;
+        color: var(--editor-neutral-color);
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
 }
 
 #controls {
@@ -222,85 +205,28 @@ img {
     right: 14px;
     top: 4px;
     user-select: none;
-    background: white;
-}
+    background: var(--editor-neutral-bgcolor);
 
-@media screen and (prefers-reduced-motion: no-preference) {
-    #controls {
+    @media screen and (prefers-reduced-motion: no-preference) {
         transition: color 0.6s, background 0.6s;
     }
-}
 
-#controls [disabled] {
-    color: #ccc;
-}
-
-#controls>*:not(:last-child):after {
-    content: " | ";
-}
-
-@media screen and (max-width: 980px) {
-    #controls {
+    @media screen and (max-width: 980px) {
         z-index: 2;
         padding-top: 24px;
         top: 0;
         left: 0;
         right: 0;
     }
-}
 
-/* 
-  Dark Theme (Added in Inky 0.10.0)
-    # theme: dark
-*/
-
-body.dark {
-    background: black;
-    color: white;
-}
-
-.dark h2 {
-    color: #666;
-}
-
-.dark .container {
-    background: black;
-}
-
-.dark .written-in-ink {
-    background: black;
-}
-
-.dark a {
-    color: #cc8f1a;
-}
-.dark .unclickable{
-    color: #c4af87;
-    cursor:not-allowed;
-}
-
-.dark a:hover {
-    color: white;
-}
-
-@media screen and (prefers-reduced-motion: no-preference) {
-    .dark a {
-        transition: color 0.6s;
+    [disabled] {
+        color: #ccc;
+        .dark & {
+            color: #444;
+        }
     }
-}
 
-.dark strong {
-    color: white;
-}
-
-.dark #controls [disabled] {
-    color: #444;
-}
-
-.dark .end {
-    color: white;
-}
-
-.dark #controls {
-    background: black;
+    > *:not(:last-child):after {
+        content: " | ";
+    }
 }
