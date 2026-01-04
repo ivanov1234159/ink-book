@@ -1,5 +1,5 @@
-import { loadManifest } from "./load.js";
-import { compileStory, executeCommandFromTag } from "./story.js";
+import { createEditor, loadManifest } from "./load.js";
+import { executeCommandFromTag } from "./story.js";
 import buildInCode from "./build-in.js";
 import customCode from "../src/custom.js";
 
@@ -23,31 +23,15 @@ if (typeof customCode === 'function') {
 
 buildInCode();
 
-// Create ink story from the content using inkjs
-const story = compileStory(files['main.ink'], { fileHandler: new inkjs.JsonFileHandler(files) });
-
-executeCommandFromTag(story, 'theme set auto');
-// Global tags - those at the top of the ink file
-if (story.globalTags != null) {
-  for (const tagString of story.globalTags) {
-    executeCommandFromTag(story, tagString);
-  }
-}
-
-var storyContainer = document.querySelector("#story");
-var outerScrollContainer = document.querySelector(".outerContainer");
+const {$editor: outerScrollContainer, $story: story, $preview: storyContainer} = createEditor(document.body, files['main.ink'], { fileHandler: new inkjs.JsonFileHandler(files) }, { withCode: true, withPreview: true, readonly: false });
 
 // page features setup
-let rewindEl = document.getElementById("rewind");
+let rewindEl = outerScrollContainer.querySelector(".controls > .rewind");
 if (rewindEl) {
-  rewindEl.addEventListener("click", function (event) {
-    removeAll("p");
-    removeAll("img");
-    restart();
-  });
+  rewindEl.addEventListener("click", restart);
 }
 
-const themeSwitchEl = document.getElementById("theme-switch");
+const themeSwitchEl = outerScrollContainer.querySelector(".controls > .theme-switch");
 if (themeSwitchEl) {
   themeSwitchEl.addEventListener("click", () => {
     document.body.classList.toggle("dark");
@@ -56,15 +40,16 @@ if (themeSwitchEl) {
 }
 
 // Kick off the start of the story!
-continueStory(true);
+// continueStory(true);
+restart();
 
 // Main story processing function. Each time this is called it generates
 // all the next content up as far as the next set of choices.
 function continueStory(firstTime) {
-  var delay = 0.0;
+  let delay = 0.0;
 
   // Don't over-scroll past new content
-  var previousBottomEdge = firstTime ? 0 : contentBottomEdgeY();
+  const previousBottomEdge = firstTime ? 0 : contentBottomEdgeY(storyContainer);
 
   // Generate story text - loop through available content
   while (story.canContinue) {
@@ -76,18 +61,15 @@ function continueStory(firstTime) {
 
     // Any special tags included with this line
     for (const tag of story.currentTags) {
-      executeCommandFromTag(story, tag, {$element: paragraphElement, $text: text});
+      executeCommandFromTag(story, tag, {$preview: storyContainer, $element: paragraphElement, $text: text});
 
       // CLEAR - removes all existing content.
       // RESTART - clears everything and restarts the story from the beginning
-      if (tag == "CLEAR" || tag == "RESTART") {
-        removeAll("p");
-        removeAll("img");
-
-        if (tag == "RESTART") {
-          restart();
-          return;
-        }
+      if (tag == "CLEAR") {
+        removeAll(storyContainer, "p");
+      } else if (tag == "RESTART") {
+        restart();
+        return;
       }
     }
 
@@ -107,9 +89,9 @@ function continueStory(firstTime) {
     // Create paragraph with anchor element
     const choiceParagraphElement = document.createElement("p");
     choiceParagraphElement.classList.add("choice");
-    choiceParagraphElement.innerHTML = `<a href='#'>${choice.text}</a>`;
+    choiceParagraphElement.innerHTML = `<a href="#">${choice.text}</a>`;
     for (const choiceTag of choice.tags) {
-      executeCommandFromTag(story, choiceTag, {$element: choiceParagraphElement, $text: choice.text, $choice: choice});
+      executeCommandFromTag(story, choiceTag, {$preview: storyContainer, $element: choiceParagraphElement, $text: choice.text, $choice: choice});
     }
 
     storyContainer.appendChild(choiceParagraphElement);
@@ -128,10 +110,10 @@ function continueStory(firstTime) {
         // Extend height to fit
         // We do this manually so that removing elements and creating new ones doesn't
         // cause the height (and therefore scroll) to jump backwards temporarily.
-        storyContainer.style.height = contentBottomEdgeY() + "px";
+        storyContainer.style.height = contentBottomEdgeY(storyContainer) + "px";
 
         // Remove all existing choices
-        removeAll(".choice");
+        removeAll(storyContainer, ".choice");
 
         // Tell the story where to go next
         story.ChooseChoiceIndex(choice.index);
@@ -146,11 +128,12 @@ function continueStory(firstTime) {
   storyContainer.style.height = "";
 
   if (!firstTime) {
-    scrollDown(previousBottomEdge);
+    scrollDown(outerScrollContainer, previousBottomEdge);
   }
 }
 
 function restart() {
+  removeAll(storyContainer, "p");
   story.ResetState();
   continueStory(true);
   outerScrollContainer.scrollTo(0, 0);
@@ -169,9 +152,7 @@ function isAnimationEnabled() {
 function showAfter(delay, el) {
   if (isAnimationEnabled()) {
     el.classList.add("hide");
-    setTimeout(function () {
-      el.classList.remove("hide");
-    }, delay);
+    setTimeout(() => el.classList.remove("hide"), delay);
   } else {
     // If the user doesn't want animations, show immediately
     el.classList.remove("hide");
@@ -180,39 +161,36 @@ function showAfter(delay, el) {
 
 // Scrolls the page down, but no further than the bottom edge of what you could
 // see previously, so it doesn't go too far.
-function scrollDown(previousBottomEdge) {
+function scrollDown(outerScrollContainer, previousBottomEdge) {
   // If the user doesn't want animations, let them scroll manually
   if (!isAnimationEnabled()) {
     return;
   }
 
-  // Line up top of screen with the bottom of where the previous content ended
-  var target = previousBottomEdge;
+  // Line up top of screen with the bottom of where the previous content ended, but can't go further than the very bottom of the page
+  const target = Math.min(previousBottomEdge, outerScrollContainer.scrollHeight - outerScrollContainer.clientHeight)
+  const start = outerScrollContainer.scrollTop;
 
-  // Can't go further than the very bottom of the page
-  var limit =
-    outerScrollContainer.scrollHeight - outerScrollContainer.clientHeight;
-  if (target > limit) target = limit;
-
-  var start = outerScrollContainer.scrollTop;
-
-  var dist = target - start;
-  var duration = 300 + (300 * dist) / 100;
-  var startTime = null;
+  const duration = 3 * (100 + target - start);
+  let startTime = null;
   function step(time) {
-    if (startTime == null) startTime = time;
-    var t = (time - startTime) / duration;
-    var lerp = 3 * t * t - 2 * t * t * t; // ease in/out
+    if (startTime == null) {
+      startTime = time;
+    }
+    const t = (time - startTime) / duration;
+    const lerp = 3 * t * t - 2 * t * t * t; // ease in/out
     outerScrollContainer.scrollTo(0, (1.0 - lerp) * start + lerp * target);
-    if (t < 1) requestAnimationFrame(step);
+    if (t < 1) {
+      requestAnimationFrame(step);
+    }
   }
   requestAnimationFrame(step);
 }
 
 // The Y coordinate of the bottom end of all the story content, used
 // for growing the container, and deciding how far to scroll.
-function contentBottomEdgeY() {
-  var bottomElement = storyContainer.lastElementChild;
+function contentBottomEdgeY(storyContainer) {
+  const bottomElement = storyContainer.lastElementChild;
   return bottomElement
     ? bottomElement.offsetTop + bottomElement.offsetHeight
     : 0;
@@ -220,10 +198,8 @@ function contentBottomEdgeY() {
 
 // Remove all elements that match the given selector. Used for removing choices after
 // you've picked one, as well as for the CLEAR and RESTART tags.
-function removeAll(selector) {
-  var allElements = storyContainer.querySelectorAll(selector);
-  for (var i = 0; i < allElements.length; i++) {
-    var el = allElements[i];
-    el.parentNode.removeChild(el);
+function removeAll(element, selector) {
+  for (const toRemove of element.querySelectorAll(selector)) {
+    toRemove.parentNode.removeChild(toRemove);
   }
 }
