@@ -4,6 +4,18 @@ function isAnimationEnabled() {
   return window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
 }
 
+export function shallowClone(object, object2) {
+  if (typeof object === 'object' && object !== null) {
+    const clone = {...object};
+    Object.setPrototypeOf(clone, Object.getPrototypeOf(object));
+    if (typeof object2 === 'object' && object2 !== null) {
+      Object.assign(clone, object2);
+    }
+    return clone;
+  }
+  return object;
+}
+
 
 // Remove all elements that match the given selector. Used for removing choices after
 // you've picked one, as well as for the CLEAR and RESTART tags.

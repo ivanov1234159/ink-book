@@ -1,5 +1,4 @@
 import { createEditor, loadManifest } from "./load.js";
-import { continueStory } from "./story.js";
 import buildInCode from "./build-in.js";
 import customCode from "../src/custom.js";
 import { removeAll } from "./helpers.js";
@@ -61,5 +60,5 @@ restart();
 function restart() {
   removeAll(editor.$preview, "p");
   editor.$story.ResetState();
-  continueStory(editor.$story, editor.$preview, true);
+  editor.continueStory(true);
 }

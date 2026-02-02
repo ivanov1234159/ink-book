@@ -1,4 +1,11 @@
 import { compileStory, executeCommandFromTag } from "./story.js";
+import {
+  contentBottomEdgeY,
+  removeAll,
+  scrollDown,
+  shallowClone,
+  showAfter,
+} from "./helpers.js";
 
 const pathJoin = (...parts) =>
   parts
@@ -99,7 +106,9 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     // this.$controls.innerHTML = '';
     if (Array.isArray(editorOptions?.controls)) {
       for (const { key, label, title, handler } of editorOptions.controls) {
-        const controlElement = document.createElement(typeof handler === "function" ? "a" : "span");
+        const controlElement = document.createElement(
+          typeof handler === "function" ? "a" : "span"
+        );
         controlElement.classList.add(key);
         controlElement.innerHTML = label ?? key;
         if (typeof title === "string" && title.length > 0) {
@@ -148,11 +157,11 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       return this;
     }
 
-    executeCommandFromTag(this.$story, "theme set auto", { ...this });
+    executeCommandFromTag(this.$story, "theme set auto", shallowClone(this));
     // Global tags - those at the top of the ink file
     if (this.$story.globalTags != null) {
       for (const tagString of this.$story.globalTags) {
-        executeCommandFromTag(this.$story, tagString, { ...this });
+        executeCommandFromTag(this.$story, tagString, shallowClone(this));
       }
     }
 
@@ -170,5 +179,109 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     }
 
     this.startStory();
+  }
+
+  // Main story processing function. Each time this is called it generates
+  // all the next content up as far as the next set of choices.
+  continueStory(firstTime = false) {
+    let delay = 0.0;
+
+    // Don't over-scroll past new content
+    const previousBottomEdge = firstTime
+      ? 0
+      : contentBottomEdgeY(this.$preview);
+
+    // Generate story text - loop through available content
+    while (this.$story.canContinue) {
+      // Create paragraph element (initially hidden)
+      let paragraphElement = document.createElement("p");
+      // Get ink to generate the next paragraph
+      let text = this.$story.Continue();
+      paragraphElement.innerHTML = text;
+
+      // Any special tags included with this line
+      for (const tag of this.$story.currentTags) {
+        const tagResult = executeCommandFromTag(this.$story, tag, shallowClone(this, {
+          $element: paragraphElement,
+          $text: text,
+        }));
+
+        if (tagResult === TAG_RESULT.EXIT) {
+          return;
+        }
+      }
+
+      // Check if text is empty
+      if (text.trim().length == 0) {
+        continue; // Skip empty paragraphs
+      }
+      this.$preview.appendChild(paragraphElement);
+
+      // Fade in paragraph after a short delay
+      showAfter(delay, paragraphElement);
+      delay += 200.0;
+    }
+
+    // Create HTML choices from ink choices
+    for (const choice of this.$story.currentChoices) {
+      // Create paragraph with anchor element
+      const choiceParagraphElement = document.createElement("p");
+      choiceParagraphElement.classList.add("choice");
+      choiceParagraphElement.innerHTML = `<a href="#">${choice.text}</a>`;
+      for (const choiceTag of choice.tags) {
+        const tagResult = executeCommandFromTag(this.$story, choiceTag, shallowClone(this, {
+          $element: choiceParagraphElement,
+          $text: choice.text,
+          $choice: shallowClone(choice),
+        }));
+
+        if (tagResult === TAG_RESULT.EXIT) {
+          return;
+        }
+      }
+
+      // Check if choice.text is empty
+      if (choice.text.trim().length == 0) {
+        continue; // Skip empty choices
+      }
+
+      this.$preview.appendChild(choiceParagraphElement);
+
+      // Fade choice in after a short delay
+      showAfter(delay, choiceParagraphElement);
+      delay += 200.0;
+
+      // Click on choice
+      const choiceAnchorEl = choiceParagraphElement.querySelector("a");
+      if (choiceAnchorEl) {
+        choiceAnchorEl.addEventListener("click", (event) => {
+          // Don't follow <a> link
+          event.preventDefault();
+
+          // Extend height to fit
+          // We do this manually so that removing elements and creating new ones doesn't
+          // cause the height (and therefore scroll) to jump backwards temporarily.
+          this.$preview.style.height = contentBottomEdgeY(this.$preview) + "px";
+
+          // Remove all existing choices
+          removeAll(this.$preview, ".choice");
+
+          // Tell the story where to go next
+          this.$story.ChooseChoiceIndex(choice.index);
+
+          // Aaand loop
+          this.continueStory();
+        });
+      }
+    }
+
+    // Unset $preview's height, allowing it to resize itself
+    this.$preview.style.height = "";
+
+    if (!firstTime) {
+      scrollDown(this.$preview, previousBottomEdge);
+    } else {
+      this.$preview.scrollTo(0, 0);
+    }
   }
 }

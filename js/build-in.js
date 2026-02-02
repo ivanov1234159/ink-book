@@ -49,10 +49,10 @@ export default function buildIn() {
     removeAll($preview, "p");
   });
 
-  registerCommand(["restart"], (_, __, { $story, $preview }) => {
+  registerCommand(["restart"], (_, __, { continueStory, $story, $preview }) => {
     removeAll($preview, "p");
     $story.ResetState();
-    continueStory($story, $preview, true);
+    continueStory(true);
     return TAG_RESULT.EXIT;
   });
 }
