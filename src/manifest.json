@@ -1,4 +1,5 @@
 {
+    "main": "main.ink",
     "files": [
         "main.ink",
         "lessons/lesson-01-the-flow.ink"

@@ -11,9 +11,9 @@ for (const {storyPath, downloadPath} of manifest.files) {
   }).then((response) => response.text());
 }
 
-if (typeof files['main.ink'] !== 'string') {
-    alert('Abort. Missing "main.ink" file!');
-    throw new Error('Abort. Missing "main.ink" file!');
+if (typeof files[manifest.main] !== 'string') {
+    alert(`Abort. Missing "${manifest.main}" file!`);
+    throw new Error(`Abort. Missing "${manifest.main}" file!`);
 }
 
 if (typeof customCode === 'function') {
@@ -24,7 +24,7 @@ buildInCode();
 
 const editor = createEditor(
   document.body,
-  files["main.ink"],
+  files[manifest.main],
   { fileHandler: new inkjs.JsonFileHandler(files) },
   {
     withCode: false,

@@ -22,6 +22,7 @@ export async function loadManifest() {
 
   return {
     ...manifest,
+    main: manifest.main ?? 'main.ink',
     files:
       manifest.files?.map((path) => ({
         storyPath: path,
