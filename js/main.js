@@ -1,7 +1,6 @@
 import { createEditor, loadManifest } from "./load.js";
 import buildInCode from "./build-in.js";
 import customCode from "../src/custom.js";
-import { removeAll } from "./helpers.js";
 
 const manifest = await loadManifest();
 
@@ -36,7 +35,7 @@ const editor = createEditor(
         key: "rewind",
         label: "restart",
         title: "Restart story from beginning",
-        handler: restart,
+        handler: () => editor.restartStory(true),
       },
       {
         key: "theme-switch",
@@ -55,10 +54,4 @@ const editor = createEditor(
 );
 
 // Kick off the start of the story!
-restart();
-
-function restart() {
-  removeAll(editor.$preview, "p");
-  editor.$story.ResetState();
-  editor.continueStory(true);
-}
+editor.triggerControl("rewind");

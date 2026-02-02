@@ -49,10 +49,8 @@ export default function buildIn() {
     removeAll($preview, "p");
   });
 
-  registerCommand(["restart"], (_, __, { continueStory, $story, $preview }) => {
-    removeAll($preview, "p");
-    $story.ResetState();
-    continueStory(true);
+  registerCommand(["restart"], (_, __, { restartStory }) => {
+    restartStory(true);
     return TAG_RESULT.EXIT;
   });
 }

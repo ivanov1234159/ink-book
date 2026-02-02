@@ -168,7 +168,14 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     return this;
   }
 
-  restartStory() {
+  restartStory(soft = false) {
+    if (soft) {
+      removeAll(this.$preview, "p");
+      this.$story.ResetState();
+      this.continueStory(true);
+      return;
+    }
+
     if (this.$code) {
       const storyString = Array.from(this.$code.children)
         .map((item) =>
@@ -179,6 +186,13 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     }
 
     this.startStory();
+  }
+
+  triggerControl(key) {
+    const control = this._controls.find(control => control.key === key);
+    if (control && typeof control.handler === 'function') {
+      control.handler();
+    }
   }
 
   // Main story processing function. Each time this is called it generates
