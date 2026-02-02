@@ -1,4 +1,4 @@
-import { compileStory, executeCommandFromTag } from "./story.js";
+import { compileStory, executeCommandFromTag, TAG_RESULT } from "./story.js";
 import {
   contentBottomEdgeY,
   removeAll,
