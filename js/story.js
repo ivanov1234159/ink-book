@@ -1,10 +1,3 @@
-import {
-  contentBottomEdgeY,
-  removeAll,
-  scrollDown,
-  showAfter,
-} from "./helpers.js";
-
 export function compileStory(storyString, compilerOptions = undefined) {
   return new inkjs.Compiler(storyString, compilerOptions).Compile();
 }
@@ -22,7 +15,7 @@ export const TAG_RESULT = Object.freeze({
     {RawValue}  := `{Value}` | `"{Value}"` | `${VarName}`
     {Value}     := Number | Boolean | null | String
     {VarName}   := String that's a name of an existing INK variable
-    {Option}    := `{Name}={Arg}`
+    {Option}    := `--{Name}={Arg}`
     {Name}      := String satisfing /^[\w_][\w\d_-]*$/
     {END}       := `` (marks the end of section/string)
 
@@ -35,7 +28,7 @@ export function tagParser(story, tagString) {
   for (const rawValue of tagArray) {
     let matchesOption =
       typeof rawValue === "string"
-        ? /^(?<name>[\w_][\w\d_-]*)=(?<value>.*)$/g.exec(rawValue)
+        ? /^--(?<name>[\w_][\w\d_-]*)=(?<value>.*)$/g.exec(rawValue)
         : null;
     if (matchesOption == null) {
       matchesOption = { groups: { name: null, value: rawValue } };
