@@ -29,7 +29,7 @@ const editor = createEditor(
   files["main.ink"],
   { fileHandler: new inkjs.JsonFileHandler(files) },
   {
-    withCode: true,
+    withCode: false,
     withPreview: true,
     readonly: false,
     controls: [

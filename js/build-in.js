@@ -1,4 +1,5 @@
-import { registerCommand } from "./story.js";
+import { registerCommand, TAG_RESULT } from "./story.js";
+import { removeAll } from "./helpers.js";
 
 export default function buildIn() {
   registerCommand(["theme", "set"], ([theme = "auto"]) => {
@@ -43,4 +44,15 @@ export default function buildIn() {
       return new Error('Using "choice" tag in a non-choice context!');
     }
   );
+
+  registerCommand(["clear"], (_, __, { $preview }) => {
+    removeAll($preview, "p");
+  });
+
+  registerCommand(["restart"], (_, __, { $story, $preview }) => {
+    removeAll($preview, "p");
+    $story.ResetState();
+    continueStory($story, $preview, true);
+    return TAG_RESULT.EXIT;
+  });
 }

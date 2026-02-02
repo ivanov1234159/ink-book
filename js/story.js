@@ -1,8 +1,20 @@
-import { contentBottomEdgeY, removeAll, scrollDown, showAfter } from "./helpers.js";
+import {
+  contentBottomEdgeY,
+  removeAll,
+  scrollDown,
+  showAfter,
+} from "./helpers.js";
 
 export function compileStory(storyString, compilerOptions = undefined) {
-    return new inkjs.Compiler(storyString, compilerOptions).Compile();
+  return new inkjs.Compiler(storyString, compilerOptions).Compile();
 }
+
+export const TAG_RESULT = Object.freeze({
+  // OK: 0,
+  EXIT: 1,
+  // BREAK: 2,
+  // CONTINUE: 3,
+});
 
 /*
     {Tag}       := `{Arg} {Tag}` | `{Option} {Tag}` | `{Arg}{END}` | `{Option}{END}`
@@ -17,69 +29,97 @@ export function compileStory(storyString, compilerOptions = undefined) {
     INFO: Invalid sintax may be skipped; comma (,) separated {Arg} will be cast to Array if has at least 2 items
 */
 export function tagParser(story, tagString) {
-    const tagArray = tagString.match(/(?:[^\s"]+|"[^"]*")+/g) ?? [];
-    const args = [];
-    const options = {};
-    for(const rawValue of tagArray) {
-        let matchesOption = typeof rawValue === 'string' ? /^(?<name>[\w_][\w\d_-]*)=(?<value>.*)$/g.exec(rawValue) : null;
-        if (matchesOption == null) {
-            matchesOption = {groups: {name: null, value: rawValue}};
-        }
-        let value = (typeof matchesOption.groups?.value === 'string'
-            ? matchesOption.groups.value.match(/(?:[^",]+|"[^"]*")+/g).map(parseValue)
-            : [parseValue(matchesOption.groups?.value)])
-            .map(fn => fn(story));
-        if (value.length === 1) {
-            value = value[0];
-        }
-        if (matchesOption.groups?.name) {
-            options[matchesOption.groups.name] = value;
-        } else {
-            args.push(value);
-        }
+  const tagArray = tagString.match(/(?:[^\s"]+|"[^"]*")+/g) ?? [];
+  const args = [];
+  const options = {};
+  for (const rawValue of tagArray) {
+    let matchesOption =
+      typeof rawValue === "string"
+        ? /^(?<name>[\w_][\w\d_-]*)=(?<value>.*)$/g.exec(rawValue)
+        : null;
+    if (matchesOption == null) {
+      matchesOption = { groups: { name: null, value: rawValue } };
     }
-    args.options = options;
-    return args;
+    let value = (
+      typeof matchesOption.groups?.value === "string"
+        ? matchesOption.groups.value
+            .match(/(?:[^",]+|"[^"]*")+/g)
+            .map(parseValue)
+        : [parseValue(matchesOption.groups?.value)]
+    ).map((fn) => fn(story));
+    if (value.length === 1) {
+      value = value[0];
+    }
+    if (matchesOption.groups?.name) {
+      options[matchesOption.groups.name] = value;
+    } else {
+      args.push(value);
+    }
+  }
+  args.options = options;
+  return args;
 }
 
 function parseValue(value) {
-    if (typeof value === 'string') {
-        if (value.length >= 2 && value[0] === '"' && value.at(-1) === '"') {
-            return ((stringVal) => (() => stringVal))(value.substring(1, value.length - 1));
-        } else if (value.length >= 2 && value[0] === '$') {
-            return ((varName) => ((story) => varName in story.variablesState ? story.variablesState[varName] : undefined))(value.substring(1));
-        } else if (['true', 'false'].includes(value.toLowerCase())) {
-            return ((boolVal) => (() => boolVal))(value.toLowerCase() === 'true');
-        } else if (value.toLowerCase() === 'null') {
-            return () => null;
-        }
+  if (typeof value === "string") {
+    if (value.length >= 2 && value[0] === '"' && value.at(-1) === '"') {
+      return (
+        (stringVal) => () =>
+          stringVal
+      )(value.substring(1, value.length - 1));
+    } else if (value.length >= 2 && value[0] === "$") {
+      return (
+        (varName) => (story) =>
+          varName in story.variablesState
+            ? story.variablesState[varName]
+            : undefined
+      )(value.substring(1));
+    } else if (["true", "false"].includes(value.toLowerCase())) {
+      return (
+        (boolVal) => () =>
+          boolVal
+      )(value.toLowerCase() === "true");
+    } else if (value.toLowerCase() === "null") {
+      return () => null;
     }
-    const numberValue = Number(value);
-    if (!isNaN(numberValue) && (typeof value !== 'string' || String(numberValue) === value)) {
-        return () => numberValue;
-    }
-    return () => value;
+  }
+  const numberValue = Number(value);
+  if (
+    !isNaN(numberValue) &&
+    (typeof value !== "string" || String(numberValue) === value)
+  ) {
+    return () => numberValue;
+  }
+  return () => value;
 }
 
 const commands = [];
 
 export function registerCommand(command, handler) {
-    commands.push({command, commandAsString: String(command), handler});
+  commands.push({ command, commandAsString: String(command), handler });
 }
 
 export function executeCommandFromTag(story, tagString, context = null) {
-    const tagArray = tagParser(story, tagString);
-    const tagAsString = String(tagArray);
-    for (const {command, commandAsString, handler} of commands) {
-        if (tagAsString.startsWith(commandAsString) && (tagAsString.length === commandAsString.length || tagAsString[commandAsString.length] === ',')) {
-            const codeOrError = handler(tagArray.slice(command.length), tagArray.options, context);
-            if (Number.isSafeInteger(codeOrError)) {
-                return codeOrError;
-            } else if (codeOrError instanceof Error) {
-                console.error(codeOrError);
-            }
-        }
+  const tagArray = tagParser(story, tagString);
+  const tagAsString = String(tagArray);
+  for (const { command, commandAsString, handler } of commands) {
+    if (
+      tagAsString.startsWith(commandAsString) &&
+      (tagAsString.length === commandAsString.length ||
+        tagAsString[commandAsString.length] === ",")
+    ) {
+      const codeOrError = handler(
+        tagArray.slice(command.length),
+        tagArray.options,
+        context
+      );
+      if (Number.isSafeInteger(codeOrError)) {
+        return codeOrError;
+      } else if (codeOrError instanceof Error) {
+        console.error(codeOrError);
+      }
     }
+  }
 }
 
 // Main story processing function. Each time this is called it generates
@@ -100,16 +140,14 @@ export function continueStory(story, storyContainer, firstTime) {
 
     // Any special tags included with this line
     for (const tag of story.currentTags) {
-      executeCommandFromTag(story, tag, {$preview: storyContainer, $element: paragraphElement, $text: text});
+      const tagResult = executeCommandFromTag(story, tag, {
+        $story: story,
+        $preview: storyContainer,
+        $element: paragraphElement,
+        $text: text,
+      });
 
-      // CLEAR - removes all existing content.
-      // RESTART - clears everything and restarts the story from the beginning
-      if (tag == "CLEAR") {
-        removeAll(storyContainer, "p");
-      } else if (tag == "RESTART") {
-        removeAll(storyContainer, "p");
-        story.ResetState();
-        continueStory(story, storyContainer, true);
+      if (tagResult === TAG_RESULT.EXIT) {
         return;
       }
     }
@@ -126,13 +164,23 @@ export function continueStory(story, storyContainer, firstTime) {
   }
 
   // Create HTML choices from ink choices
-  story.currentChoices.forEach(choice => {
+  for (const choice of story.currentChoices) {
     // Create paragraph with anchor element
     const choiceParagraphElement = document.createElement("p");
     choiceParagraphElement.classList.add("choice");
     choiceParagraphElement.innerHTML = `<a href="#">${choice.text}</a>`;
     for (const choiceTag of choice.tags) {
-      executeCommandFromTag(story, choiceTag, {$preview: storyContainer, $element: choiceParagraphElement, $text: choice.text, $choice: choice});
+      const tagResult = executeCommandFromTag(story, choiceTag, {
+        $story: story,
+        $preview: storyContainer,
+        $element: choiceParagraphElement,
+        $text: choice.text,
+        $choice: choice,
+      });
+
+      if (tagResult === TAG_RESULT.EXIT) {
+        return;
+      }
     }
 
     storyContainer.appendChild(choiceParagraphElement);
@@ -142,9 +190,9 @@ export function continueStory(story, storyContainer, firstTime) {
     delay += 200.0;
 
     // Click on choice
-    const choiceAnchorEl = choiceParagraphElement.querySelector('a');
+    const choiceAnchorEl = choiceParagraphElement.querySelector("a");
     if (choiceAnchorEl) {
-      choiceAnchorEl.addEventListener("click", event => {
+      choiceAnchorEl.addEventListener("click", (event) => {
         // Don't follow <a> link
         event.preventDefault();
 
@@ -163,7 +211,7 @@ export function continueStory(story, storyContainer, firstTime) {
         continueStory(story, storyContainer);
       });
     }
-  });
+  }
 
   // Unset storyContainer's height, allowing it to resize itself
   storyContainer.style.height = "";
