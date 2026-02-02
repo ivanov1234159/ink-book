@@ -1,3 +1,4 @@
+import { contentBottomEdgeY, removeAll, scrollDown, showAfter } from "./helpers.js";
 
 export function compileStory(storyString, compilerOptions = undefined) {
     return new inkjs.Compiler(storyString, compilerOptions).Compile();
@@ -79,4 +80,97 @@ export function executeCommandFromTag(story, tagString, context = null) {
             }
         }
     }
+}
+
+// Main story processing function. Each time this is called it generates
+// all the next content up as far as the next set of choices.
+export function continueStory(story, storyContainer, firstTime) {
+  let delay = 0.0;
+
+  // Don't over-scroll past new content
+  const previousBottomEdge = firstTime ? 0 : contentBottomEdgeY(storyContainer);
+
+  // Generate story text - loop through available content
+  while (story.canContinue) {
+    // Create paragraph element (initially hidden)
+    let paragraphElement = document.createElement("p");
+    // Get ink to generate the next paragraph
+    let text = story.Continue();
+    paragraphElement.innerHTML = text;
+
+    // Any special tags included with this line
+    for (const tag of story.currentTags) {
+      executeCommandFromTag(story, tag, {$preview: storyContainer, $element: paragraphElement, $text: text});
+
+      // CLEAR - removes all existing content.
+      // RESTART - clears everything and restarts the story from the beginning
+      if (tag == "CLEAR") {
+        removeAll(storyContainer, "p");
+      } else if (tag == "RESTART") {
+        removeAll(storyContainer, "p");
+        story.ResetState();
+        continueStory(story, storyContainer, true);
+        return;
+      }
+    }
+
+    // Check if text is empty
+    if (text.trim().length == 0) {
+      continue; // Skip empty paragraphs
+    }
+    storyContainer.appendChild(paragraphElement);
+
+    // Fade in paragraph after a short delay
+    showAfter(delay, paragraphElement);
+    delay += 200.0;
+  }
+
+  // Create HTML choices from ink choices
+  story.currentChoices.forEach(choice => {
+    // Create paragraph with anchor element
+    const choiceParagraphElement = document.createElement("p");
+    choiceParagraphElement.classList.add("choice");
+    choiceParagraphElement.innerHTML = `<a href="#">${choice.text}</a>`;
+    for (const choiceTag of choice.tags) {
+      executeCommandFromTag(story, choiceTag, {$preview: storyContainer, $element: choiceParagraphElement, $text: choice.text, $choice: choice});
+    }
+
+    storyContainer.appendChild(choiceParagraphElement);
+
+    // Fade choice in after a short delay
+    showAfter(delay, choiceParagraphElement);
+    delay += 200.0;
+
+    // Click on choice
+    const choiceAnchorEl = choiceParagraphElement.querySelector('a');
+    if (choiceAnchorEl) {
+      choiceAnchorEl.addEventListener("click", event => {
+        // Don't follow <a> link
+        event.preventDefault();
+
+        // Extend height to fit
+        // We do this manually so that removing elements and creating new ones doesn't
+        // cause the height (and therefore scroll) to jump backwards temporarily.
+        storyContainer.style.height = contentBottomEdgeY(storyContainer) + "px";
+
+        // Remove all existing choices
+        removeAll(storyContainer, ".choice");
+
+        // Tell the story where to go next
+        story.ChooseChoiceIndex(choice.index);
+
+        // Aaand loop
+        continueStory(story, storyContainer);
+      });
+    }
+  });
+
+  // Unset storyContainer's height, allowing it to resize itself
+  storyContainer.style.height = "";
+
+  if (!firstTime) {
+    scrollDown(storyContainer, previousBottomEdge);
+  } else {
+    storyContainer.scrollTo(0, 0);
+  }
 }

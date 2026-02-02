@@ -60,40 +60,115 @@ function unescapeHtml(html) {
 export function createEditor(
   rootElement,
   storyString,
-  stroyCompilerOptions = undefined,
+  inkCompilerOptions = undefined,
   editorOptions = undefined
 ) {
-  const editorElement = document.createElement("div");
-  editorElement.classList.add("editor");
-  editorElement.innerHTML = `
-<div class="controls">
-    <a class="rewind" title="Restart story from beginning">restart</a>
-    <a class="theme-switch" title="Switch theme">theme</a>
-</div>
-${editorOptions?.withCode ? `<ol class="editor-code" ${editorOptions?.readonly ? '' : 'contenteditable'}><li spellcheck="false"><br></li></ol>` : ''}
-${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ''}`;
-  rootElement.appendChild(editorElement);
+  return new InkEditor(editorOptions)
+    .mountEditor(rootElement)
+    .setStory(storyString, inkCompilerOptions)
+    .startStory();
+}
 
-  const codeElement = editorElement.querySelector(".editor-code");
-  if (codeElement) {
-    codeElement.innerHTML = storyString
-        .split("\n")
-        .map((item) => (item === "" ? "<li spellcheck=\"false\"><br></li>" : `<li spellcheck="false">${escapeHtml(item)}</li>`))
-        .join("\n");
-  }
+class InkEditor {
+  $editor;
+  $story;
+  $code;
+  $preview;
+  $controls;
+  _controls = [];
+  _lastInkCompilerOptions = undefined;
 
-  const previewElement = editorElement.querySelector(".editor-preview");
+  constructor(editorOptions = undefined) {
+    this.$editor = document.createElement("div");
+    this.$editor.classList.add("editor");
+    this.$editor.innerHTML = `
+<div class="controls"></div>
+${
+  editorOptions?.withCode
+    ? `<ol class="editor-code" ${
+        editorOptions?.readonly ? "" : "contenteditable"
+      }><li spellcheck="false"><br></li></ol>`
+    : ""
+}
+${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
 
-  // Create ink story from the content using inkjs
-  const story = compileStory(storyString, stroyCompilerOptions);
+    this.$controls = this.$editor.querySelector(".controls");
+    this.$code = this.$editor.querySelector(".editor-code");
+    this.$preview = this.$editor.querySelector(".editor-preview");
 
-  executeCommandFromTag(story, "theme set auto", {$preview: previewElement});
-  // Global tags - those at the top of the ink file
-  if (story.globalTags != null) {
-    for (const tagString of story.globalTags) {
-      executeCommandFromTag(story, tagString, {$preview: previewElement});
+    // this.$controls.innerHTML = '';
+    if (Array.isArray(editorOptions?.controls)) {
+      for (const { key, label, title, handler } of editorOptions.controls) {
+        const controlElement = document.createElement(typeof handler === "function" ? "a" : "span");
+        controlElement.classList.add(key);
+        controlElement.innerHTML = label ?? key;
+        if (typeof title === "string" && title.length > 0) {
+          controlElement.setAttribute("title", title);
+        }
+
+        if (typeof handler === "function") {
+          controlElement.addEventListener("click", handler);
+        } else {
+          controlElement.classList.add("unclickable");
+        }
+        this.$controls.appendChild(controlElement);
+      }
+
+      this._controls = editorOptions.controls;
     }
   }
 
-  return { $editor: editorElement, $story: story, $preview: previewElement };
+  mountEditor(rootElement) {
+    if (!this.$editor.parentNode) {
+      rootElement.appendChild(this.$editor);
+    }
+
+    return this;
+  }
+
+  setStory(storyString, inkCompilerOptions = undefined) {
+    if (this.$code) {
+      this.$code.innerHTML = storyString
+        .split("\n")
+        .map((item) =>
+          item === ""
+            ? '<li spellcheck="false"><br></li>'
+            : `<li spellcheck="false">${escapeHtml(item)}</li>`
+        )
+        .join("\n");
+    }
+
+    this.$story = compileStory(storyString, inkCompilerOptions);
+    this._lastInkCompilerOptions = inkCompilerOptions;
+    return this;
+  }
+
+  startStory() {
+    if (!this.$story) {
+      return this;
+    }
+
+    executeCommandFromTag(this.$story, "theme set auto", { ...this });
+    // Global tags - those at the top of the ink file
+    if (this.$story.globalTags != null) {
+      for (const tagString of this.$story.globalTags) {
+        executeCommandFromTag(this.$story, tagString, { ...this });
+      }
+    }
+
+    return this;
+  }
+
+  restartStory() {
+    if (this.$code) {
+      const storyString = Array.from(this.$code.children)
+        .map((item) =>
+          item.innerHTML === "<br>" ? "" : unescapeHtml(item.innerHTML)
+        )
+        .join("\n");
+      this.setStory(storyString, this._lastInkCompilerOptions);
+    }
+
+    this.startStory();
+  }
 }
