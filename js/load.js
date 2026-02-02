@@ -65,19 +65,7 @@ function unescapeHtml(html) {
   return textarea.value;
 }
 
-export function createEditor(
-  rootElement,
-  storyString,
-  inkCompilerOptions = undefined,
-  editorOptions = undefined
-) {
-  return new InkEditor(editorOptions)
-    .mountEditor(rootElement)
-    .setStory(storyString, inkCompilerOptions)
-    .startStory();
-}
-
-class InkEditor {
+export class InkEditor {
   $editor;
   $story;
   $code;
@@ -166,6 +154,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       }
     }
 
+    this.restartStory(true);
     return this;
   }
 
