@@ -1,3 +1,4 @@
+INCLUDE about.ink
 INCLUDE lessons/lesson-01-the-flow.ink
 
 VAR SHORTCUTS_ENABLED = true
@@ -21,6 +22,8 @@ Table of Contents
 + [Lesson 5: Variables (WIP)]
 + [Lesson 6: Advanced Content (WIP)]
 + [Lesson 7: Advanced Choices (WIP)]
++ [About & Bonus Lesson]
+-> About
 
 -
 <-TODO

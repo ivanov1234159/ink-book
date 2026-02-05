@@ -3,6 +3,7 @@
     "title": "Ink book",
     "files": [
         "main.ink",
+        "about.ink",
         "lessons/lesson-01-the-flow.ink"
     ]
 }
