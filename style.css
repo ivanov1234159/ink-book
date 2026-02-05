@@ -3,6 +3,11 @@
 :root {
     --editor-neutral-color: black;
     --editor-neutral-bgcolor: white;
+
+    @media screen and (prefers-color-scheme: dark) {
+        --editor-neutral-color: white;
+        --editor-neutral-bgcolor: black;
+    }
 }
 
 body {
@@ -10,6 +15,8 @@ body {
     font-weight: lighter;
     color: var(--editor-neutral-color);
     background: var(--editor-neutral-bgcolor);
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     /* overflow: hidden; */
 
@@ -25,25 +32,40 @@ body {
         --editor-neutral-color: white;
         --editor-neutral-bgcolor: black;
     }
+    &.light {
+        --editor-neutral-color: black;
+        --editor-neutral-bgcolor: white;
+    }
 }
 
 .editor {
+    --editor-lines-count-max: 30;
     display: grid;
     grid-template-rows: auto;
     grid-template-areas: "controls controls" "code preview";
     grid-auto-columns: 1fr;
     grid-auto-rows: 1fr;
-    column-gap: 1em;
+    column-gap: 1rem;
+    font-weight: lighter;
+    color: var(--editor-neutral-color);
+
+    & & {
+        border: 0.1rem solid var(--editor-neutral-color);
+        border-radius: 0.4rem;
+        padding: 0 0.5rem 0.5rem;
+        margin: 0 0.5rem;
+        box-sizing: border-box;
+    }
 
     @media screen and (max-width: 980px) {
         grid-template-areas: "controls" "code" "preview";
     }
 
-    &:has(.editor-code):not(:has(.editor-preview)) {
+    &:has(>.editor-code-wrapper):not(:has(>.editor-preview)) {
         grid-template-areas: "controls" "code";
     }
 
-    &:has(.editor-preview):not(:has(.editor-code)) {
+    &:has(>.editor-preview):not(:has(>.editor-code-wrapper)) {
         grid-template-areas: "controls" "preview";
     }
 
@@ -51,7 +73,7 @@ body {
         grid-area: controls;
     }
 
-    .editor-code {
+    .editor-code-wrapper {
         grid-area: code;
     }
 
@@ -81,9 +103,9 @@ body {
 .editor-preview {
     display: block;
     /* max-width: 60ch; */
-    max-height: 31lh;
+    max-height: calc(1lh + var(--editor-lines-count-max, 0) * 1lh);
     margin: 0 auto;
-    padding: 4em 1.25em 1.25em;
+    padding: 4rem 1.25rem 1.25rem;
     background: var(--editor-neutral-bgcolor);
     box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
@@ -160,14 +182,21 @@ body {
         Class applied to first choice
     */
     :not(.choice) + .choice {
-        padding-top: 1em;
+        padding-top: 1rem;
     }
 
     /*
         Class applied to choice links
     */
-    .choice a, .choice span {
+    .choice > a, .choice > span {
         font-size: 15pt;
+    }
+
+    .tag {
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        color: #444;
     }
 
     /* 
@@ -184,12 +213,10 @@ body {
 }
 
 .controls {
-    font-size: 9pt;
+    font-size: 9pt !important;
     text-align: right;
-    padding: 0.5em 1.2em;
+    padding: 0.5rem 1.2rem;
     margin: auto 0;
-    position: sticky;
-    top: 0;
     user-select: none;
     background: var(--editor-neutral-bgcolor);
 
@@ -204,12 +231,21 @@ body {
         }
     }
 
+    &:not(:has(> :first-child)) {
+        /* display: none; */
+        padding-bottom: 0;
+    }
+
     > *:not(:last-child):after {
         content: " | ";
     }
+
+    > a {
+        cursor: pointer;
+    }
 }
 
-.editor-preview a, .controls a {
+.editor-preview > * > a, .controls > a {
     font-weight: 700;
     color: #b97c2c;
     font-family: sans-serif;
@@ -253,36 +289,41 @@ ol.editor-code {
     height: fit-content;
     padding-left: 0;
     margin: 0;
-    border: 0.1em solid #ddd;
-    border-radius: 0.5em;
+    border: 0.1rem solid #ddd;
+    border-radius: 0.5rem;
     outline: none;
+    text-align: start;
 
-    max-height: 31lh;
+    max-height: calc(1lh + var(--editor-lines-count-max, 0) * 1lh);
     overflow-y: scroll;
     overflow-wrap: break-word;
 
     display: grid;
-    grid-template-columns: minmax(2.5em, auto) 1fr;
+    grid-template-columns: minmax(2.5rem, auto) 1fr;
+    grid-template-rows: 1.5lh repeat(auto-fit, 1lh) [repeat-end];
+
+    &.max-fill {
+        grid-template-rows: 1.5lh repeat(auto-fill, 1lh) [repeat-end];
+    }
 }
 
 ol.editor-code > li {
     counter-increment: line;
-
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    column-gap: 0.5em;
+    column-gap: 0.5rem;
 }
 
 ol.editor-code > li > br:only-child {
-    margin-top: 1em;
+    margin-top: 1rem;
 }
 
 ol.editor-code > li::before {
     content: counter(line);
     display: inline-block;
-    border-right: 0.1em solid #ddd;
-    padding: 0 0.5em;
+    border-right: 0.1rem solid #ddd;
+    padding: 0 0.5rem;
     color: #888;
     text-align: right;
     user-select: none;
@@ -303,4 +344,72 @@ ol.editor-code > li:last-of-type, ol.editor-code > li:last-of-type::before {
 
 ol.editor-code > li:last-of-type::before {
     margin-bottom: -0.5lh;
+}
+
+.sibling-index > * {
+    --si1: 0;
+    --si2: 0;
+
+    /* --sibling-index works between 0 and 99 */
+    --sibling-index: calc(10 * var(--si2) + var(--si1));
+
+    &:nth-child(10n+1) {
+        --si1: 1;
+    }
+    &:nth-child(10n+2) {
+        --si1: 2;
+    }
+    &:nth-child(10n+3) {
+        --si1: 3;
+    }
+    &:nth-child(10n+4) {
+        --si1: 4;
+    }
+    &:nth-child(10n+5) {
+        --si1: 5;
+    }
+    &:nth-child(10n+6) {
+        --si1: 6;
+    }
+    &:nth-child(10n+7) {
+        --si1: 7;
+    }
+    &:nth-child(10n+8) {
+        --si1: 8;
+    }
+    &:nth-child(10n+9) {
+        --si1: 9;
+    }
+
+    &:nth-child(n + 10):nth-child(-n + 19) {
+        --si2: 1;
+    }
+    &:nth-child(n + 20):nth-child(-n + 29) {
+        --si2: 2;
+    }
+    &:nth-child(n + 30):nth-child(-n + 39) {
+        --si2: 3;
+    }
+    &:nth-child(n + 40):nth-child(-n + 49) {
+        --si2: 4;
+    }
+    &:nth-child(n + 50):nth-child(-n + 59) {
+        --si2: 5;
+    }
+    &:nth-child(n + 60):nth-child(-n + 69) {
+        --si2: 6;
+    }
+    &:nth-child(n + 70):nth-child(-n + 79) {
+        --si2: 7;
+    }
+    &:nth-child(n + 80):nth-child(-n + 89) {
+        --si2: 8;
+    }
+    &:nth-child(n + 90):nth-child(-n + 99) {
+        --si2: 9;
+    }
+}
+
+ol.editor-code > li:last-of-type {
+    grid-row: var(--sibling-index) / span repeat-end;
 }

@@ -1,21 +1,26 @@
-
 // Detects whether the user accepts animations
 function isAnimationEnabled() {
   return window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
 }
 
+export function pathJoin(...parts) {
+  return parts
+    .join("/")
+    .replace(/\/+/g, "/")
+    .replace(/\/[^/]+\/\.\.\//g, "/");
+}
+
 export function shallowClone(object, object2) {
-  if (typeof object === 'object' && object !== null) {
-    const clone = {...object};
+  if (typeof object === "object" && object !== null) {
+    const clone = { ...object };
     Object.setPrototypeOf(clone, Object.getPrototypeOf(object));
-    if (typeof object2 === 'object' && object2 !== null) {
+    if (typeof object2 === "object" && object2 !== null) {
       Object.assign(clone, object2);
     }
     return clone;
   }
   return object;
 }
-
 
 // Remove all elements that match the given selector. Used for removing choices after
 // you've picked one, as well as for the CLEAR and RESTART tags.
@@ -45,7 +50,10 @@ export function scrollDown(storyContainer, previousBottomEdge) {
   }
 
   // Line up top of screen with the bottom of where the previous content ended, but can't go further than the very bottom of the page
-  const target = Math.min(previousBottomEdge, storyContainer.scrollHeight - storyContainer.clientHeight)
+  const target = Math.min(
+    previousBottomEdge,
+    storyContainer.scrollHeight - storyContainer.clientHeight
+  );
   const start = storyContainer.scrollTop;
 
   const duration = 3 * (100 + target - start);

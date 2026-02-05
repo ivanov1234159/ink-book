@@ -1,28 +1,23 @@
 import { compileStory, executeCommandFromTag, TAG_RESULT } from "./story.js";
 import {
   contentBottomEdgeY,
+  pathJoin,
   removeAll,
   scrollDown,
   shallowClone,
   showAfter,
 } from "./helpers.js";
 
-const pathJoin = (...parts) =>
-  parts
-    .join("/")
-    .replace(/\/+/g, "/")
-    .replace(/\/[^/]+\/\.\.\//g, "/");
-
 export async function loadManifest() {
   const manifest = JSON.parse(
     await fetch("src/manifest.json", {
       cache: "no-cache",
-    }).then((response) => response.text())
+    }).then((response) => response.text()),
   );
 
   return {
     ...manifest,
-    main: manifest.main ?? 'main.ink',
+    main: manifest.main ?? "main.ink",
     files:
       manifest.files?.map((path) => ({
         storyPath: path,
@@ -30,28 +25,6 @@ export async function loadManifest() {
       })) ?? [],
   };
 }
-
-async function scanDirDeep(path) {
-  const paths = [];
-  try {
-    const srcDoc = new DOMParser().parseFromString(
-      await (await fetch(path)).text(),
-      "text/html"
-    );
-    for (const item of srcDoc.querySelectorAll("ul > li > a[href]")) {
-      const itemPath = item.getAttribute("href");
-      if (itemPath.endsWith(".ink")) {
-        paths.push(pathJoin(path, itemPath));
-      } else {
-        paths.push(...(await scanDirDeep(pathJoin(path, itemPath))));
-      }
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  return paths;
-}
-//await scanDirDeep(pathJoin(location.pathname, "src/"));
 
 function escapeHtml(html) {
   const p = document.createElement("p");
@@ -76,14 +49,26 @@ export class InkEditor {
 
   constructor(editorOptions = undefined) {
     this.$editor = document.createElement("div");
-    this.$editor.classList.add("editor");
+    this.$editor.classList.add("editor", ...(Array.isArray(editorOptions.classList) ? editorOptions.classList : []));
+    if (
+      Number.isSafeInteger(editorOptions.maxLines) &&
+      editorOptions.maxLines > 0
+    ) {
+      this.$editor.style.setProperty(
+        "--editor-lines-count-max",
+        editorOptions.maxLines,
+      );
+    }
+    if (typeof editorOptions.id === "string" && editorOptions.id.length > 0) {
+      this.$editor.id = editorOptions.id;
+    }
     this.$editor.innerHTML = `
 <div class="controls"></div>
 ${
   editorOptions?.withCode
-    ? `<ol class="editor-code" ${
+    ? `<div class="editor-code-wrapper"><ol class="editor-code sibling-index${editorOptions.maxFill ? " max-fill" : ""}" ${
         editorOptions?.readonly ? "" : "contenteditable"
-      }><li spellcheck="false"><br></li></ol>`
+      }><li spellcheck="false"><br></li></ol></div>`
     : ""
 }
 ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
@@ -96,7 +81,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     if (Array.isArray(editorOptions?.controls)) {
       for (const { key, label, title, handler } of editorOptions.controls) {
         const controlElement = document.createElement(
-          typeof handler === "function" ? "a" : "span"
+          typeof handler === "function" ? "a" : "span",
         );
         controlElement.classList.add(key);
         controlElement.innerHTML = label ?? key;
@@ -116,8 +101,11 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     }
   }
 
-  mountEditor(rootElement) {
+  mountEditor(rootElement, clear = false) {
     if (!this.$editor.parentNode) {
+      if (clear) {
+        rootElement.innerHTML = '';
+      }
       rootElement.appendChild(this.$editor);
     }
 
@@ -131,7 +119,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
         .map((item) =>
           item === ""
             ? '<li spellcheck="false"><br></li>'
-            : `<li spellcheck="false">${escapeHtml(item)}</li>`
+            : `<li spellcheck="false">${escapeHtml(item)}</li>`,
         )
         .join("\n");
     }
@@ -160,7 +148,9 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
 
   restartStory(soft = false) {
     if (soft) {
-      removeAll(this.$preview, "p");
+      if (this.$preview) {
+        removeAll(this.$preview, "p");
+      }
       this.$story.ResetState();
       this.continueStory(true);
       return;
@@ -169,7 +159,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     if (this.$code) {
       const storyString = Array.from(this.$code.children)
         .map((item) =>
-          item.innerHTML === "<br>" ? "" : unescapeHtml(item.innerHTML)
+          item.innerHTML === "<br>" ? "" : unescapeHtml(item.innerHTML),
         )
         .join("\n");
       this.setStory(storyString, this._lastInkCompilerOptions);
@@ -179,8 +169,8 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
   }
 
   triggerControl(key) {
-    const control = this._controls.find(control => control.key === key);
-    if (control && typeof control.handler === 'function') {
+    const control = this._controls.find((control) => control.key === key);
+    if (control && typeof control.handler === "function") {
       control.handler();
     }
   }
@@ -205,10 +195,14 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
 
       // Any special tags included with this line
       for (const tag of this.$story.currentTags) {
-        const tagResult = executeCommandFromTag(this.$story, tag, shallowClone(this, {
-          $element: paragraphElement,
-          $text: text,
-        }));
+        const tagResult = executeCommandFromTag(
+          this.$story,
+          tag,
+          shallowClone(this, {
+            $element: paragraphElement,
+            $text: text,
+          }),
+        );
 
         if (tagResult === TAG_RESULT.EXIT) {
           return;
@@ -216,7 +210,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       }
 
       // Check if text is empty
-      if (text.trim().length == 0) {
+      if (text.trim().length == 0 || !this.$preview) {
         continue; // Skip empty paragraphs
       }
       this.$preview.appendChild(paragraphElement);
@@ -233,11 +227,15 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       choiceParagraphElement.classList.add("choice");
       choiceParagraphElement.innerHTML = `<a href="#">${choice.text}</a>`;
       for (const choiceTag of choice.tags) {
-        const tagResult = executeCommandFromTag(this.$story, choiceTag, shallowClone(this, {
-          $element: choiceParagraphElement,
-          $text: choice.text,
-          $choice: shallowClone(choice),
-        }));
+        const tagResult = executeCommandFromTag(
+          this.$story,
+          choiceTag,
+          shallowClone(this, {
+            $element: choiceParagraphElement,
+            $text: choice.text,
+            $choice: shallowClone(choice),
+          }),
+        );
 
         if (tagResult === TAG_RESULT.EXIT) {
           return;
@@ -245,7 +243,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       }
 
       // Check if choice.text is empty
-      if (choice.text.trim().length == 0) {
+      if (choice.text.trim().length == 0 || !this.$preview) {
         continue; // Skip empty choices
       }
 
@@ -279,13 +277,15 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       }
     }
 
-    // Unset $preview's height, allowing it to resize itself
-    this.$preview.style.height = "";
+    if (this.$preview) {
+      // Unset $preview's height, allowing it to resize itself
+      this.$preview.style.height = "";
 
-    if (!firstTime) {
-      scrollDown(this.$preview, previousBottomEdge);
-    } else {
-      this.$preview.scrollTo(0, 0);
+      if (!firstTime) {
+        scrollDown(this.$preview, previousBottomEdge);
+      } else {
+        this.$preview.scrollTo(0, 0);
+      }
     }
   }
 }

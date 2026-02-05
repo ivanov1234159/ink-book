@@ -20,7 +20,9 @@ export default function buildIn() {
 
     if (theme === "dark") {
       document.body.classList.add("dark");
+      document.body.classList.remove("light");
     } else if (theme === "light") {
+      document.body.classList.add("light");
       document.body.classList.remove("dark");
     } else {
       return new Error(
