@@ -234,7 +234,7 @@ Q: Which of the following can produce a flow like this:
 *   "Monsieur, let us savour this moment!"[] I declared.\
     My master clouted me firmly around the head and dragged me out of the door.\
     He insisted that we hurried home to Savile Row as fast as we could.\
-*   We hurried home [] to Savile Row as fast as we could.</pre> # editor preview-only
+*   We hurried home [] to Savile Row as fast as we could.</pre> # editor only-preview
 
 * [<pre>We arrived into London at 9.45pm exactly.\
 \*   "There is not a moment to lose!" I declared.\
@@ -242,7 +242,7 @@ Q: Which of the following can produce a flow like this:
 \*   "Monsieur, let us savour this moment!"\[\] I declared.\
      My master clouted me firmly around the head and dragged me out of the door.\
      He insisted that we hurried home to Savile Row as fast as we could.\
-\*   We hurried home \[\] to Savile Row as fast as we could.</pre> # editor read-only]
+\*   We hurried home \[\] to Savile Row as fast as we could.</pre> # editor read-only --class-list\[\]=choice-editor]
 
 * [<pre>We arrived into London at 9.45pm exactly.\
 \*   "There is not a moment to lose!"\[\] I declared.\
@@ -250,7 +250,7 @@ Q: Which of the following can produce a flow like this:
 \*   "Monsieur, let us savour this moment!"\[\] I declared.\
      My master clouted me firmly around the head and dragged me out of the door.\
      He insisted that we hurried home to Savile Row as fast as we could.\
-\*   We hurried home to Savile Row as fast as we could.</pre> # editor read-only]
+\*   We hurried home to Savile Row as fast as we could.</pre> # editor read-only --class-list\[\]=choice-editor]
 
 * <pre>We arrived into London at 9.45pm exactly.\
 \*   "There is not a moment to lose!"\[\] I declared.\
@@ -259,7 +259,7 @@ Q: Which of the following can produce a flow like this:
      My master clouted me firmly  around the head  and dragged me out of the door.\
      He insisted that we hurried home to\\\
      Savile Row as fast as we could.\
-\*   We hurried home \[\] to Savile Row as fast as we could.</pre> # editor read-only
+\*   We hurried home \[\] to Savile Row as fast as we could.</pre> # editor read-only --class-list\[\]=choice-editor
     - - (Question_3_Correct)
     Hurray, you've made it! Now, lets introduse some structure.
     ->nextChapter
@@ -272,7 +272,7 @@ Q: Which of the following can produce a flow like this:
      He insisted that we hurried home to Savile Row as fast as we could.\
 \*   We hurried home \[\]\
 \
-to Savile Row as fast as we could.</pre> # editor read-only]
+to Savile Row as fast as we could.</pre> # editor read-only --class-list\[\]=choice-editor]
 
 * {SHORTCUTS_ENABLED} [(skip question)]
 ->nextChapter

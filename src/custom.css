@@ -1,0 +1,22 @@
+body:not(.dark) .editor.choice-editor {
+    box-shadow: 6px 2px 16px 0px rgba(136, 165, 191, 0.48) , -6px -2px 16px 0px rgba(255, 255, 255, 0.8);
+    &:hover {
+        box-shadow: 3px 4px 0px 0px #4e57ef , 6px 2px 16px 0px rgba(136, 165, 191, 0.48) , -6px -2px 16px 0px rgba(255, 255, 255, 0.8);
+    }
+}
+
+body.dark .editor.choice-editor:hover {
+    box-shadow: 5px 6px 0px 0px #4e57ef;
+}
+
+body:not(.dark) #root.editor > * > .choice > a:not(:has(.editor.choice-editor)):hover {
+    border-radius: 0.15rem;
+    padding: 0.25rem;
+    box-shadow: 3px 4px 0px 0px #4e57ef , 6px 2px 16px 0px rgba(136, 165, 191, 0.48) , -6px -2px 16px 0px rgba(255, 255, 255, 0.8);
+}
+
+body.dark #root.editor > * > .choice > a:not(:has(.editor.choice-editor)):hover {
+    border-radius: 0.15rem;
+    padding: 0.25rem;
+    box-shadow: 3px 4px 0px 0px #4e57ef;
+}
