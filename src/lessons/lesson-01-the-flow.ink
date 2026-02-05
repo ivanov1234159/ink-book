@@ -356,15 +356,65 @@ Hello world!\
 
 * [Question 4]
 - (Question_4)
-Q: TODO
+Q: Which of the following plays successfully without errors, nor warnings?
 
-* [a]
-->basicKnots_part_3
-* [b]
-* [c]
-* [d]
--
-->Question_4
+* [<pre>\-> hurry_home\
+== hurry_home ==\
+We hurried home \
+\-> to_savile_row\
+\
+\== to_savile_row ==\
+to Savile Row\
+\-> as_fast_as_we_could\
+\
+\== as_fast_as_we_could\
+as fast as we could.\
+\->END</pre> # editor read-only --class-list\[\]=editor-choice]
+    Yes, indeed, that's correct!
+    * * [next]
+    -> basicKnots_part_3
+* [<pre>\-> hurry_home\
+== hurry_home ==\
+We hurried home \
+\-> to_savile_row\
+\
+\== to_savile_row ==\
+to Savile Row\
+\-> as_fast_as_we_could\
+\
+\== as_fast_as_we_could ==\
+as fast as we could.</pre> # editor read-only --class-list\[\]=editor-choice]
+    Sorry, lets remember that in every valid script a knot always ends with\
+    some divert. You wana try again?
+    -> Question_4
+* [<pre>== hurry_home ==\
+We hurried home \
+\-> to_savile_row\
+\
+\== to_savile_row ==\
+to Savile Row\
+\-> as_fast_as_we_could\
+\
+\== as_fast_as_we_could ==\
+as fast as we could.\
+\->END</pre> # editor read-only --class-list\[\]=editor-choice]
+    Unfortunately, no, it's not this one. You are missing to provide\
+    a starting point of the stroy and so this story would not play as intended.\
+    Here, have another shot.
+    -> Question_4
+* [<pre>== hurry_home ==\
+We hurried home \
+\-> to_savile_row\
+\
+\== to_savile_row ==\
+to Savile Row\
+\-> as_fast_as_we_could\
+\
+\== as_fast_as_we_could ==\
+as fast as we could.</pre> # editor read-only --class-list\[\]=editor-choice]
+    What did you forget? Remember that some special diverts had to be used\
+    somewhere. Do your best next time. What about now?
+    -> Question_4
 
 - (basicKnots_part_3)
 
@@ -378,6 +428,9 @@ We hurried home to Savile Row \-> as_fast_as_we_could\
 \=== as_fast_as_we_could ===\
 as fast as we could.\
 \->END</pre> # editor read-preview --start=hurry_home
+
+Note: we are using some special flag of our inline editor in order to\
+properly play the full story.
 
 * [next]
 - (basicKnots_part_4)
@@ -396,7 +449,7 @@ Knots can include sub-sections called "stitches". These are marked using a singl
 \= in_the_guards_van\
     ...\
 \= missed_the_train\
-    ...</pre>
+    ...</pre> # editor read-only
 
 One could use a knot for a scene, for instance, and stitches for the events within the scene.
 
@@ -406,7 +459,7 @@ Stitches have unique names within the knot; a stitch can be diverted to using it
     \-> the_orient_express.in_third_class\
 \
 *   [Travel in the guard's van]\
-    \-> the_orient_express.in_the_guards_van</pre>
+    \-> the_orient_express.in_the_guards_van</pre> # editor read-only
 
 * [next]
 - (basicKnots_part_5)
@@ -417,13 +470,13 @@ Diverting to a knot which contains stitches will divert to the first stitch in t
 
 <pre>*   [Travel in first class]\
     "First class, Monsieur. Where else?"\
-    \-> the_orient_express</pre>
+    \-> the_orient_express</pre> # editor read-only
 
 is the same as:
 
 <pre>*   [Travel in first class]\
     "First class, Monsieur. Where else?"\
-    \-> the_orient_express.in_first_class</pre>
+    \-> the_orient_express.in_first_class</pre> # editor read-only
 
 ...unless we move the order of the stitches around inside the knot!
 
@@ -441,7 +494,7 @@ We boarded the train, but where?\
 \= in_first_class\
     ...\
 \= in_second_class\
-    ...</pre>
+    ...</pre> # editor read-only
 
 * [next]
 - (basicKnots_part_6)
@@ -468,12 +521,98 @@ The compiler will warn you if ambiguous names are used.
 
 * [Question 5]
 - (Question_5)
-Q: TODO
+Q: Which of the following plays successfully without errors, nor warnings?
 
-* [a]
-* [b]
-* [c]
-* [d]
-->nextChapter
+* [<pre>\-> the_orient_express\
+\
+\=== the_orient_express ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to second class\]\
+        \-> in_second_class\
+\
+\= in_third_class\
+    I put myself in third.\
+    \-> ss_mongolia\
+\
+\=== ss_mongolia ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to second class\]\
+        \-> in_second_class\
+\
+\= in_second_class\
+    I put myself in second.\
+    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    No, do you remember that stiches outside of the knot they are defined should\
+    be referenced with the knot's name? Alright, wanna try one more time?
+
+* [<pre>\-> the_orient_express\
+\
+\=== the_orient_express ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to second class\]\
+        \-> in_second_class\
+\
+\= in_second_class\
+    I put myself in second.\
+    \-> END\
+\
+\=== ss_mongolia ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to second class\]\
+        \-> in_second_class\
+\
+\= in_second_class\
+    I put myself in second.\
+    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    Yes, that's right. You can have the same stich name in different knots.
+    ->nextChapter
+
+* [<pre>\-> ss_mongolia.in_first_class\
+\
+\=== the_orient_express ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to third class\]\
+        \-> in_third_class\
+\
+\= in_third_class\
+    I put myself in third.\
+\
+\=== ss_mongolia ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to second class\]\
+        \-> the_orient_express.in_third_class\
+\
+\= in_second_class\
+    I put myself in second.\
+    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    Did you forget about the previous question? There was a missing divert at one of the stiches. Want one more chance? Sure, why not.
+* [<pre>\-> in_first_class\
+\
+\=== the_orient_express ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to third class\]\
+        \-> in_third_class\
+\
+\= in_third_class\
+    I put myself in third.\
+    \-> END\
+\
+\=== ss_mongolia ===\
+\= in_first_class\
+    I settled my master.\
+    *   \[Move to second class\]\
+        \-> the_orient_express.in_third_class\
+\
+\= in_second_class\
+    I put myself in second.\
+    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    How do we start this story? First class of what - The Orient Express or SS Mongolia? It's not clear. So remember to always disambiguate diverts when required. Have another pass.
 -
 ->Question_5

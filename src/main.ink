@@ -15,12 +15,12 @@ Table of Contents
 -> Introduction
 + [Lesson 1: The Flow]
 -> Lesson_01_The_Flow
-+ [Lesson 2: Weave]
-+ [Lesson 3: Varying Choices]
-+ [Lesson 4: Branching The Flow (exercise)]
-+ [Lesson 5: Variables]
-+ [Lesson 6: Advanced Content]
-+ [Lesson 7: Advanced Choices]
++ [Lesson 2: Weave (WIP)]
++ [Lesson 3: Varying Choices (WIP)]
++ [Lesson 4: Branching The Flow (exercise) (WIP)]
++ [Lesson 5: Variables (WIP)]
++ [Lesson 6: Advanced Content (WIP)]
++ [Lesson 7: Advanced Choices (WIP)]
 
 -
 <-TODO
