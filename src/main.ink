@@ -1,7 +1,7 @@
 INCLUDE about.ink
 INCLUDE lessons/lesson-01-the-flow.ink
 
-VAR SHORTCUTS_ENABLED = true
+VAR SHORTCUTS_ENABLED = false
 
 -> ToC
 
