@@ -102,8 +102,9 @@ body {
 
 .editor-preview {
     display: block;
-    /* max-width: 60ch; */
+    max-width: 140ch;
     max-height: calc(1lh + var(--editor-lines-count-max, 0) * 1lh);
+    width: inherit;
     margin: 0 auto;
     padding: 4rem 1.25rem 1.25rem;
     background: var(--editor-neutral-bgcolor);
@@ -167,6 +168,10 @@ body {
     strong {
         color: var(--editor-neutral-color);
         font-weight: bold;
+    }
+
+    pre {
+        display: inline-block;
     }
 
     /*
@@ -250,6 +255,9 @@ body {
     color: #b97c2c;
     font-family: sans-serif;
     text-decoration: none;
+    &::after {
+        color: #b97c2c !important;
+    }
     &:hover {
         color: var(--editor-neutral-color);
     }
@@ -264,8 +272,8 @@ body {
     .dark & {
         color: #cc8f1a;
 
-        @media screen and (prefers-reduced-motion: no-preference) {
-            transition: color 0.6s;
+        &::after {
+            color: #cc8f1a !important;
         }
     }
 }
@@ -411,5 +419,8 @@ body {
     }
     &:nth-child(n + 90):nth-child(-n + 99) {
         --si2: 9;
+    }
+    &:nth-child(n + 100) {
+        --si2: unset;
     }
 }
