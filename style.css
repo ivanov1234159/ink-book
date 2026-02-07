@@ -283,7 +283,7 @@ body {
 }
 
 
-ol.editor-code {
+.editor-code {
     counter-reset: line;
     list-style: none;
     height: fit-content;
@@ -307,7 +307,7 @@ ol.editor-code {
     }
 }
 
-ol.editor-code > li {
+.editor-code > * {
     counter-increment: line;
     grid-column: 1 / -1;
     display: grid;
@@ -315,11 +315,11 @@ ol.editor-code > li {
     column-gap: 0.5rem;
 }
 
-ol.editor-code > li > br:only-child {
+.editor-code > * > br:only-child {
     margin-top: 1rem;
 }
 
-ol.editor-code > li::before {
+.editor-code > *::before {
     content: counter(line);
     display: inline-block;
     border-right: 0.1rem solid #ddd;
@@ -330,20 +330,24 @@ ol.editor-code > li::before {
     -webkit-user-select: none;
 }
 
-ol.editor-code > li:first-of-type, ol.editor-code > li:first-of-type::before {
+.editor-code > *:first-child, .editor-code > *:first-child::before {
     padding-top: 0.5lh;
 }
 
-ol.editor-code > li:first-of-type::before {
+.editor-code > *:first-child::before {
     margin-top: -0.5lh;
 }
 
-ol.editor-code > li:last-of-type, ol.editor-code > li:last-of-type::before {
+.editor-code > *:last-child, .editor-code > *:last-child::before {
     padding-bottom: 0.5lh;
 }
 
-ol.editor-code > li:last-of-type::before {
+.editor-code > *:last-child::before {
     margin-bottom: -0.5lh;
+}
+
+.editor-code > *:last-child {
+    grid-row: var(--sibling-index) / span repeat-end;
 }
 
 .sibling-index > * {
@@ -408,8 +412,4 @@ ol.editor-code > li:last-of-type::before {
     &:nth-child(n + 90):nth-child(-n + 99) {
         --si2: 9;
     }
-}
-
-ol.editor-code > li:last-of-type {
-    grid-row: var(--sibling-index) / span repeat-end;
 }

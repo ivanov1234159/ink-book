@@ -72,7 +72,7 @@ export class InkEditor {
 ${
   editorOptions?.withCode
     ? `<div class="editor-code-wrapper"><ol class="editor-code sibling-index${editorOptions.maxFill ? " max-fill" : ""}" ${
-        editorOptions?.readonly ? "" : "contenteditable"
+        editorOptions?.readonly ? "" : 'contenteditable="true"'
       }><li spellcheck="false"><br></li></ol></div>`
     : ""
 }
@@ -182,7 +182,11 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
   }
 
   triggerTag(tagString, extraContext = {}) {
-    return executeCommandFromTag(this.$story, tagString, shallowClone(this, extraContext));
+    return executeCommandFromTag(
+      this.$story,
+      tagString,
+      shallowClone(this, extraContext),
+    );
   }
 
   // Main story processing function. Each time this is called it generates
