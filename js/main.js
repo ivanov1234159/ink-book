@@ -44,11 +44,7 @@ const editor = new InkEditor({
       label: "theme",
       title: "Switch theme",
       handler: () => {
-        document.body.classList.toggle("dark");
-        window.localStorage.setItem(
-          "theme",
-          document.body.classList.contains("dark") ? "dark" : "light"
-        );
+        editor.triggerTag("theme set toggle --save=true");
       },
     },
   ],

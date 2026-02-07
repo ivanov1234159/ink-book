@@ -49,7 +49,12 @@ export class InkEditor {
 
   constructor(editorOptions = undefined) {
     this.$editor = document.createElement("div");
-    this.$editor.classList.add("editor", ...(Array.isArray(editorOptions.classList) ? editorOptions.classList : []));
+    this.$editor.classList.add(
+      "editor",
+      ...(Array.isArray(editorOptions.classList)
+        ? editorOptions.classList
+        : []),
+    );
     if (
       Number.isSafeInteger(editorOptions.maxLines) &&
       editorOptions.maxLines > 0
@@ -79,7 +84,8 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
 
     // this.$controls.innerHTML = '';
     if (Array.isArray(editorOptions?.controls)) {
-      for (const { key, label, title, handler } of editorOptions.controls) {
+      for (let i = editorOptions.controls.length - 1; i >= 0; i--) {
+        const { key, label, title, handler } = editorOptions.controls[i] ?? {};
         const controlElement = document.createElement(
           typeof handler === "function" ? "a" : "span",
         );
@@ -104,7 +110,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
   mountEditor(rootElement, clear = false) {
     if (!this.$editor.parentNode) {
       if (clear) {
-        rootElement.innerHTML = '';
+        rootElement.innerHTML = "";
       }
       rootElement.appendChild(this.$editor);
     }
@@ -173,6 +179,10 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
     if (control && typeof control.handler === "function") {
       control.handler();
     }
+  }
+
+  triggerTag(tagString, extraContext = {}) {
+    return executeCommandFromTag(this.$story, tagString, shallowClone(this, extraContext));
   }
 
   // Main story processing function. Each time this is called it generates

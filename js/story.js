@@ -3,7 +3,7 @@ export function compileStory(storyString, compilerOptions = undefined) {
 }
 
 export const TAG_RESULT = Object.freeze({
-  // OK: 0,
+  OK: 0,
   EXIT: 1,
   // BREAK: 2,
   // CONTINUE: 3,
