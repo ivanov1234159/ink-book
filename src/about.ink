@@ -17,7 +17,7 @@ that I use while writing this and haven't made it to the lessons, yet.
 == Bonus_Lesson
 <h3>Bonus Lesson</h3>
 
-I have used some advanced syntax that haven't made it to the book, yet.\
+I have used some <i>advanced</i> syntax that haven't made it to the book, yet.\
 So here are all the parts of this lesson, feel free to jump around in any order you like.
 
 + [\<> Glue \<> \| from Lesson 6 {glue: (completed)}]
@@ -29,7 +29,7 @@ So here are all the parts of this lesson, feel free to jump around in any order 
 + [Labeling choices and gathers \| from Lesson 7 {labelingChoicesAndGathers: (completed)}]
 ->labelingChoicesAndGathers
 
-+ [Global variables \| from Lesson 5 {globalVariables: (completed)}]
++ [Global variables & Variable types \| from Lesson 5 {globalVariables: (completed)}]
 ->globalVariables
 + [\~ Evaluation \| from Lesson 5 {evaluation: (completed)}]
 ->evaluation
@@ -99,7 +99,7 @@ In a real game, all three of these options might well lead to the same conclusio
     "Ah," he replied, not unkindly. "I see you are feeling frustrated. Tomorrow, things will improve."\
 -   With that Monsieur Fogg left the room.</pre> # editor read-preview
 
-* [next]
++ [next]
 - (gathers_part_2)
 
 <h5>1.2: Options and gathers form chains of content</h5>
@@ -124,7 +124,7 @@ I ran through the forest, the dogs snapping at my heels.\
 
 This is the most basic kind of weave. The rest of this section details additional features that allow weaves to nest, contain side-tracks and diversions, divert within themselves, and above all, reference earlier choices to influence later ones.
 
-* [next]
++ [next]
 - (gather_part_3)
 
 <h5>1.3: The weave philosophy</h5>
@@ -135,9 +135,9 @@ With a weave, the flow is guaranteed to start at the top and "fall" to the botto
 
 Weaves also allow for easy redrafting of choice-points; in particular, it's easy to break a sentence up and insert additional choices for variety or pacing reasons, without having to re-engineer any flow.
 
-* [Go back]
++ [Go back]
 -> Bonus_Lesson
-* [Continue with "Nesting choices and gathers"]
++ [Continue with "Nesting choices and gathers"]
 -> nestingChoicesAndGathers
 
 = nestingChoicesAndGathers
@@ -149,7 +149,7 @@ For that, we allow weaves to nest.
 
 This section comes with a warning. Nested weaves are very powerful and very compact, but they can take a bit of getting used to!
 
-* [next]
++ [next]
 - (nestingChoicesAndGathers_part_1)
 
 <h5>2.1: Options can be nested</h5>
@@ -177,7 +177,7 @@ We can add new options via a set of nested sub-choices. We tell the script that 
 <blockquote>it's good style to also indent the lines to show the nesting, but the compiler doesn't mind.\
 Also the spacing between the asterisks (for choices) and the dashes (for gathers) is redundant, i.e. "* * *" is the same as "***" and " *  *     *  ".</blockquote> # note
 
-* [next]
++ [next]
 -
 
 And should we want to add new sub-options to the other route, we do that in similar fashion.
@@ -198,7 +198,7 @@ Now, that initial choice of accusation will lead to specific follow-up questions
 
 But what if we want a more extended sub-scene?
 
-* [next]
++ [next]
 - (nestingChoicesAndGathers_part_2)
 
 <h5>2.2: Gather points can be nested too</h5>
@@ -228,7 +228,7 @@ Gathers are hopefully intuitive, but their behaviour is a little harder to put i
 \
 The basic idea is this: options separate the paths of the story, and gathers bring them back together. (Hence the name, "weave"!)</blockquote> # note --style=info
 
-* [next]
++ [next]
 - (nestingChoicesAndGathers_part_3)
 
 <h5>2.3: You can nest as many levels are you like</h5>
@@ -248,7 +248,7 @@ After a while, this sub-nesting gets hard to read and manipulate, so it's good s
 
 But, in theory at least, you could write your entire story as a single weave.
 
-* [next]
++ [next]
 - (nestingChoicesAndGathers_part_4)
 
 <h5>2.4: Example: a conversation with nested nodes</h5>
@@ -277,30 +277,251 @@ Here's a longer example:
 
 Hopefully, this demonstrates the philosophy laid out above: that weaves offer a compact way to offer a lot of branching, a lot of choices, but with the guarantee of getting from beginning to end!
 
-* [Go back]
++ [Go back]
 -> Bonus_Lesson
-* [Continue with "Labeling choices and gathers"]
++ [Continue with "Labeling choices and gathers"]
 -> labelingChoicesAndGathers
 
 = labelingChoicesAndGathers
-<h4>Lesson 7: 2. Labeling choices and gathers</h4>
+<h4>Lesson 7: 2. Labeling choices and gathers (i.e. Tracking a Weave)</h4>
 
--> TODO
+Sometimes, the weave structure is sufficient. But when it's not, we need a bit more control.
+
+<h5>2.1: Weaves are largely unaddressed</h5>
+
+By default, lines of content in a weave don't have an address or label, which means they can't be diverted to, and they can't be tested for. In the most basic weave structure, choices vary the path the player takes through the weave and what they see, but once the weave is finished those choices and that path are forgotten.
+
+But should we want to remember what the player has seen, we can add in labels where they're needed using the <code>(label_name)</code> syntax.
+
++ [next]
+- (labelingChoicesAndGathers_part_2)
+
+<h5>2.2: Gathers and options can be labelled</h5>
+
+Gather points at any nested level can be labelled using brackets.
+
+<pre>- (top)</pre> # editor read-only
+
+Once labelled, gather points can be diverted to, or tested for in conditionals, just like knots and stitches. This means you can use previous decisions to alter later outcomes inside the weave, while still keeping all the advantages of a clear, reliable forward-flow.
+
+Options can also be labelled, just like gather points, using brackets. Label brackets come before conditions in the line.
+
+These addresses can be used in conditional tests, which can be useful for creating options unlocked by other options.
+
+<pre>=== meet_guard ===\
+The guard frowns at you.\
+\
+* (greet) [Greet him]\
+  'Greetings.'\
+* (get_out) 'Get out of my way[.'],' you tell the guard.\
+\
+- 'Hmm,' replies the guard.\
+\
+* \{greet\} 'Having a nice day?' /\/ only if you greeted him\
+\
+* 'Hmm?'[] you reply.\
+\
+* \{get_out\} [Shove him aside] /\/ only if you threatened him\
+	You shove him sharply. He stares in reply, and draws his sword!\
+	\-> fight_guard            /\/ this route diverts out of the weave\
+\
+- 'Mff,' the guard replies, and then offers you a paper bag. 'Toffee?'\
+\-> DONE\
+\
+\/\/ somewhere else:
+\=== fight_guard ===\
+...\
+\-> DONE</pre> # editor read-preview --start=meet_guard
+
+
++ [next]
+- (labelingChoicesAndGathers_part_3)
+
+<h5>2.3: Scope</h5>
+
+Inside the same block of weave, you can simply use the label name; from outside the block you need a path, either to a different stitch within the same knot:
+
+<pre>=== knot ===\
+\= stitch_one\
+- \(gatherpoint) Some content.\
+\= stitch_two\
+* \{stitch_one.gatherpoint\} Option</pre> # editor read-only
+
+or pointing into another knot:
+
+<pre>=== knot_one ===\
+- \(gather_one)\
+* \{knot_two.stitch_two.gather_two\} Option\
+\
+\=== knot_two ===\
+\= stitch_two\
+- \(gather_two)\
+* \{knot_one.gather_one\} Option</pre> # editor read-only
+
+
+/*
+TODO: in "Lesson 7: 3. Loops with labeled choices"
+
+- Advanced: all options can be labelled
+- Advanced: Loops in a weave
+- Advanced: diverting to options
+- Advanced: Gathers directly after an option
+
+*/
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Global variables & Variable types"]
+-> globalVariables
 
 = globalVariables
-<h4>Lesson 5: 1. Global variables</h4>
+/*
+<h3>Lesson 5: Variables</h3>
 
--> TODO
+So far we've made conditional text, and conditional choices, using tests based on what content the player has seen so far.
+
+ink also supports variables, both temporary and global, storing numerical and content data, or even story flow commands. It is fully-featured in terms of logic, and contains a few additional structures to help keep the often complex logic of a branching story better organised.
+*/
+
+<h4>Lesson 5: 1. Global variables & Variable types</h4>
+
+The most powerful kind of variable, and arguably the most useful for a story, is a variable to store some unique property about the state of the game - anything from the amount of money in the protagonist's pocket, to a value representing the protagonist's state of mind.
+
+This kind of variable is called "global" because it can be accessed from anywhere in the story - both set, and read from. (Traditionally, programming tries to avoid this kind of thing, as it allows one part of a program to mess with another, unrelated part. But a story is a story, and stories are all about consequences: what happens in Vegas rarely stays there.)
+
+<h5>1.1: Defining Global Variables</h5>
+
+Global variables can be defined anywhere, via a <code>VAR</code> statement. They should be given an initial value, which defines what type of variable they are - boolean, integer, floating point (decimal), content, or a story address (divert).
+
+<pre>VAR knowledge_of_the_cure = false\
+VAR players_name = "Emilia"\
+VAR number_of_infected_people = 521\
+VAR chance_of_infection = 0.15\
+VAR current_epilogue = \-> they_all_die_of_the_plague</pre> # editor read-only
+
++ [next]
+- (globalVariables_part_2)
+
+<h5>1.2: Using Global Variables</h5>
+
+We can test global variables to control options, and provide conditional text, in a similar way to what we have previously seen.
+
+<pre>VAR mood = 1 /\/ try with some negative value\
+VAR knows_about_wager = false /\/ try with true\
+\-> the_train\
+\=== the_train ===\
+The train jolted and rattled. \{ mood > 0:I was feeling positive enough, however, and did not mind the odd bump\|It was more\ than I could bear\}.\
+* \{ not knows_about_wager \} 'But, Monsieur, why are we travelling?'[] I asked.\
+* \{ knows_about_wager\} I contemplated our strange adventure[]. Would it be possible?\
+\-> END</pre> # editor write-preview
+
+// TODO: "Advanced: storing diverts as variables"
+// TODO: "Advanced: Global variables are externally visible"
+
++ [next]
+- (globalVariables_part_3)
+
+<h5>1.3: Printing variables</h5>
+
+The value of a variable can be printed as content using an inline syntax similar to sequences, and conditional text:
+// TODO: sequences and conditional text may not be presented, yet
+
+<pre>VAR friendly_name_of_player = "Jackie"\
+VAR age = 23\
+\
+My name is Jean Passepartout, but my friends call me \{friendly_name_of_player\}. I'm \{age\} years old.</pre> # edotir read-preview
+
+/*
+This can be useful in debugging. For more complex printing based on logic and variables, see the section on functions.
+*/
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Evaluation"]
+-> evaluation
 
 = evaluation
-<h4>Lesson 5: 2.2. Evaluation</h4>
+<h4>Lesson 5: 2. Evaluation</h4>
 
--> TODO
+It might be noticed that previously we refered to variables as being able to contain "content", rather than "strings". That was deliberate, because a string defined in <strong>ink</strong> can contain ink - although it will always evaluate to a string. (Yikes!)
+
+An evaluation line starts with <code>~</code> and represents some mutaiton of a variable or a function call. It's never printed as part of the story.
+
+// TODO: functions may not be presented to the reader, yet
+
+<pre>VAR a_colour = ""\
+\
+~ a_colour = "\{~red\|blue\|green\|yellow\}"'
+\
+\{a_colour\}</pre> # editor read-preview
+
+<blockquote>Try restarting the sample above to get different results. It uses a non taught short "shuffle" syntax.</blockquote> # note
+
+Every time it produces one of red, blue, green or yellow.
+
+Note that once a piece of content like this is evaluated, its value is "sticky". (The quantum state collapses.) So the following won't produce a very interesting effect. (If you really want this to work, use a text function to print the colour!)
+
+<pre>VAR a_colour = ""\
+\
+~ a_colour = "{~red|blue|green|yellow}"'
+\
+The goon hits you, and sparks fly before you eyes, \{a_colour\} and \{a_colour\}.</pre> # editor read-preview
+
+
+This is also why the following is explicitly disallowed; it would be evaluated on the construction of the story, which probably isn't what you want.
+<pre>VAR a_colour = "{~red|blue|green|yellow}"</pre> # editor read-only
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Knots as variables - knot read count"]
+-> knotsAsVariables
 
 = knotsAsVariables
 <h4>Lesson 5: 4. Knots as variables - knot read count</h4>
 
--> TODO
+Technically, knots and stiches (and labeled choices and gathers also) are also variables. They are of the number type and thier value represent the number of times the knot/stich (or choice, or gather) have been visited so far.
+
+// TODO: labeling choices and gathers is from Lesson 7.2
+
+<pre>=== knot ===\
+"knot" was visited \{knot\} time\{knot!=1:s\}\
+"stich1" was visited \{stich1\} time\{stich1!=1:s\}\
+"stich2" was visited \{stich2\} time\{stich1!=1:s\}\
+\
+"stich1.choice1" was visited \{stich1.choice1\} time\{stich1.choice1!=1:s\}\
+"stich1.choice2" was visited \{stich1.choice2\} time\{stich1.choice2!=1:s\}\
+"stich1.choice3" was visited \{stich1.choice3\} time\{stich1.choice3!=1:s\}\
+"stich1.gather" was visited \{stich1.gather\} time\{stich1.gather!=1:s\}\
+\
+"stich2.choice1" was visited \{stich2.choice1\} time\{stich2.choice1!=1:s\}\
+"stich2.choice2" was visited \{stich2.choice2\} time\{stich2.choice2!=1:s\}\
+"stich2.choice3" was visited \{stich2.choice3\} time\{stich2.choice3!=1:s\}\
+"stich2.gather" was visited \{stich2.gather\} time\{stich2.gather!=1:s\}\
+\
+\= stich1\
++ (choice1) [choice 1: go to gather & stich 2]\
++ (choice2) [choice 2: go to stich 2]\
+\-> stich2\
++ (choice3) [choice 3: go to knot]\
+\-> knot\
+- (gather)\
+\-> stich2\
+\= stich2\
++ (choice1) [choice 1: go to knot]\
+\-> knot\
++ (choice2) [choice 2: go to gather & knot]\
++ (choice3) [choice 3: go to stich 1]\
+\-> stich1\
+- (gather)\
+\-> knot\
+</pre> # editor read-preview --start=knot
+
+<blockquote>Please, note that <code>VAR knot_read_count = knot_name</code> and <code>VAR knot_address = \-> knot_name</code> are from different types and represent different things. The first is the knot's read count and the secong is the knot's address!</blockquote> # note
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Knot arguments"]
+-> knotArguments
 
 = knotArguments
 <h4>Lesson _: _. Knot arguments</h4>

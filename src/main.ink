@@ -80,17 +80,17 @@ Lesson 3.2: Fallback choice
 Lesson 4: Branching The Flow (exercise)
 
 Lesson 5: Variables
-Lesson 5.1: Global variables
-Lesson 5.2: Variable types & evaluation - strings, integers, floats,
+Lesson 5.1: Global variables & Variable types - strings, integers, floats, story address,
         falsy values; usual brackets support; (no lists !)
+Lesson 5.2: Evaluation
 Lesson 5.3: Math & Logic - "+, -, *, /, mod(%), and, or, not, ==, !=, >=, <=, <, >"
 Lesson 5.4: Knots as variables - knot read count
 
 Lesson 6: Advanced Content
 Lesson 6.0: Comments
 Lesson 6.1: Glue
-Lesson 6.2: Variable text
-Lesson 6.3: Conditional text
+Lesson 6.2: Variable text (& multiline blocks ??)
+Lesson 6.3: Conditional text (& Conditional blocks ??)
 
 Lesson 7: Advanced Choices
 Lesson 7.1: Conditional choices

@@ -7,7 +7,7 @@ You can find live link to the project [here](https://ivanov1234159.github.io/ink
 
 The book is not finished, yet (even the design - can't tell that should be a book),
 
-If you deside to clone the repo, you may refer to these three valuable resources:
+If you deside to clone the repo, you may also refer to these three valuable resources:
 
 - [Running your ink](https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md) - how to actually use ink outside of the official ink editor [inky](https://github.com/inkle/inky);
 - [inkjs](https://github.com/y-lohse/inkjs) - the JavaScript package that provides a runtime and a compiler for the ink stricting language;

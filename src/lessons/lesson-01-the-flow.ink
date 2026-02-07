@@ -71,7 +71,7 @@ In <strong>ink</strong>, the story flow is the main thing that holds everything 
 
 By default, all text in your file will appear in the output content, unless specially marked up.
 
-Text on separate lines produces new paragraphs. Empty lines doen't matter.
+Text on separate lines produces new paragraphs. Empty lines don't matter.
 
 All redundant whitespace will be ignored, i.e. from the start/end of a line, or duplicated spaces.\
 Indentation doesn't matter at all.
