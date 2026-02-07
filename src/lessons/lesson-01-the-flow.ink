@@ -429,8 +429,7 @@ We hurried home to Savile Row \-> as_fast_as_we_could\
 as fast as we could.\
 \->END</pre> # editor read-preview --start=hurry_home
 
-Note: we are using some special flag of our inline editor in order to\
-properly play the full story.
+<blockquote>we are using some special flag of our inline editor in order to properly play the full story.</blockquote> # note
 
 * [next]
 - (basicKnots_part_4)

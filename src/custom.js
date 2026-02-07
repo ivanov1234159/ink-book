@@ -46,4 +46,8 @@ export default function () {
   registerCommand(["editor", "only-preview"], editorCommandBuilder({withCode: false}));
   registerCommand(["editor", "read-only"], editorCommandBuilder({withPreview: false}));
   // registerCommand(["editor", "write-preview"], editorCommandBuilder({readonly: false}));
+
+  registerCommand(["note"], (_, {style}, {$element}) => {
+    // TODO: Implement
+  });
 }

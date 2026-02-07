@@ -24,6 +24,9 @@ Table of Contents
 + [Lesson 7: Advanced Choices (WIP)]
 + [About & Bonus Lesson]
 -> About
++ [Index (WIP)]
++ [Playground: writable editor]
+-> Playground
 
 -
 <-TODO
@@ -43,6 +46,18 @@ The script aims to be clean and logically ordered, so branching dialogue can be 
 
 It's also designed with redrafting in mind; so editing a flow should be fast.
 
+* [Go back]
+-> ToC
+* [Continue with "Lesson 1: The Flow"]
+-> Lesson_01_The_Flow
+
+== Playground ==
+
+<pre>\// write you own story here ...\
+</pre> # editor write-preview
+
+* [Go back]
+-
 -> ToC
 
 
