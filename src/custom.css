@@ -20,3 +20,28 @@ body.dark #root.editor > * > .choice > a:not(:has(.editor.choice-editor)):hover 
     padding: 0.25rem;
     box-shadow: 3px 4px 0px 0px #4e57ef;
 }
+
+blockquote.note {
+    color: var(--editor-neutral-color);
+    background-color: hsl(202, 58%, 96%);
+    border-left: 0.4rem solid hsl(204, 70%, 53%);
+    line-height: 1.7em;
+    padding: 0.5rem;
+    &::before {
+        content: "Note: ";
+        font-weight: bold;
+    }
+
+    .dark & {
+        background-color: hsl(202, 58%, 40%);
+    }
+}
+
+blockquote.note.note-info {
+    background-color: hsl(232, 58%, 80%);
+    border-left: 0.4rem solid hsl(234, 70%, 53%);
+
+    .dark & {
+        background-color: hsl(232, 58%, 30%);
+    }
+}
