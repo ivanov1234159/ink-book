@@ -10,17 +10,19 @@ The book is not finished, yet (even the design - can't tell that should be a boo
 that I use while writing this and haven't made it to the lessons, yet.
 
 + [Continue with the Bonus Lesson]
-    -> Bonus_Lesson
+  -> Bonus_Lesson
++ [Try some mini games]
+  -> Bonus_Lesson.variableText.games
 + [Go back]
     -> ToC
 
 == Bonus_Lesson
 <h3>Bonus Lesson</h3>
 
-I have used some <i>advanced</i> syntax that haven't made it to the book, yet.\
-So here are all the parts of this lesson, feel free to jump around in any order you like.
+{I have used some <i>advanced</i> syntax that haven't made it to the book, yet.\
+So here are all the parts of this lesson, feel free to jump around in any order you like.|}
 
-+ [\<> Glue \<> \| from Lesson 6 {glue: (completed)}]
++ [&lt;&gt; Glue &lt;&gt; \| from Lesson 6 {glue: (completed)}]
 ->glue
 + [- Gathers \| from Lesson 2 {gathers: (completed)}]
 ->gathers
@@ -54,24 +56,43 @@ So here are all the parts of this lesson, feel free to jump around in any order 
 
 + [/\* Comments *\/ \| from Lesson 6 {comments: (completed)}]
 ->comments
-+ [\# Tags]
-+ [INCLUDEs]
++ [\# Tags {tags: (completed)}]
+->tags
++ [INCLUDEs {includes: (completed)}]
+->includes
 
-+ [\<- Treads]
+//+ [\<- Treads {treads: (completed)}]
+//->treads
 
-+ [Go back]
++ (go_back_really) [Go back]
     Oh, before you go ... I'm going to grant you access to all of the shortcuts that are available in the lessons.
     ~ SHORTCUTS_ENABLED = true
     -> ToC
 
--
-->TODO
-
-
 = glue
 <h4>Lesson 6: 2. Glue</h4>
 
--> TODO
+The default behaviour inserts line-breaks before every new line of content. In some cases, however, content must insist on not having a line-break, and it can do so using <code>&gt;&lt;</code>, or "glue".
+
+<pre>=== hurry_home ===\
+We hurried home \<>\
+\-> to_savile_row\
+\
+\=== to_savile_row ===\
+to Savile Row\
+\-> as_fast_as_we_could\
+\
+\=== as_fast_as_we_could ===\
+\<> as fast as we could.</pre> # editor read-preview --start=hurry_home
+
+// TODO: see html and maybe replace <> with &lt;&gt;
+
+You can't use too much glue: multiple glues next to each other have no additional effect. (And there's no way to "negate" a glue; once a line is sticky, it'll stick.)
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Gathers"]
+-> gathers
 
 = gathers
 <h4>Lesson 2: 1. Gathers</h4>
@@ -482,6 +503,7 @@ This is also why the following is explicitly disallowed; it would be evaluated o
 Technically, knots and stiches (and labeled choices and gathers also) are also variables. They are of the number type and thier value represent the number of times the knot/stich (or choice, or gather) have been visited so far.
 
 // TODO: labeling choices and gathers is from Lesson 7.2
+// TODO: "Advanced: knot/stitch labels are actually read counts"
 
 <pre>=== knot ===\
 "knot" was visited \{knot\} time\{knot!=1:s\}\
@@ -526,49 +548,360 @@ Technically, knots and stiches (and labeled choices and gathers also) are also v
 = knotArguments
 <h4>Lesson _: _. Knot arguments</h4>
 
--> TODO
+<h5>_.1: Knots and stitches can take parameters</h5>
+
+/*A particularly useful form of temporary variable is a parameter.*/
+Any knot or stitch can be given a value as a parameter.
+
+<pre>* [Accuse Hasting]\
+  \-> accuse("Hastings")\
+* [Accuse Mrs Black]\
+  \-> accuse("Claudia")\
+* [Accuse myself]\
+  \-> accuse("myself")\
+\
+\=== accuse(who) ===\
+"I accuse \{who\}!" Poirot declared.\
+"Really?" Japp replied. "\{who == "myself":You did it?\|\{who\}?\}"\
+"And why not?" Poirot shot back.\
+\-> END</pre> # editor read-preview
+
+<blockquote>you'll need to use parameters if you want to pass a temporary value from one stitch to another!</blockquote> # note
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Math & Logic"]
+-> mathAndLogic
 
 = mathAndLogic
 <h4>Lesson 5: 3. Selected part of Math & Logic</h4>
 
--> TODO
+<h5>3.1: Math?</h5>
+
+<strong>Ink</strong> supports the four basic mathematical operations (<code>+</code>, <code>-</code>, <code>*</code> and <code>/</code>), as well as <code>%</code> (or <code>mod</code>), which returns the remainder after integer division. There's also <code>POW</code> for to-the-power-of:
+
+<pre>\{1 + 2\} is 3.\
+\{POW(3, 2)\} is 9.\
+\{POW(16, 0.5)\} is 4.<pre> # editor read-preview
+
+
+/*
+If more complex operations are required, one can write functions (using recursion if necessary), or call out to external, game-code functions (for anything more advanced).
+*/
+
++ [next]
+-
+
+<h5>3.2: Logical operators: AND and OR</h5>
+
+Ink supports <code>and</code> (also written as <code>&&</code>) and <code>or</code> (also written as <code>\|\|</code>) in the usual way, as well as brackets.
+
+<pre>* \{ not (visit_paris or visit_rome) && (visit_london \|\| visit_new_york) \} [ Wait. Go where? I'm confused. ] \-> visit_someplace</pre> # editor read-only
+
+For non-programmers <code>X and Y</code> means both X and Y must be true, in contrast <code>X or Y</code> means either or both. We don't have a <code>xor</code>.
+
+<blockquote>you can also use the standard <code>!</code> for <code>not</code>, though it'll sometimes confuse the compiler which thinks <code>\{!text\}</code> is a once-only list. We recommend using <code>not</code> because negated boolean tests are never that exciting.</blockquote> # note
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Sticky choices"]
+-> stickyChoices
 
 = stickyChoices
 <h4>Lesson 3: 1. Sticky choices</h4>
 
--> TODO
+<h5>1.1: Choices can only be used once</h5>
+
+By default, every choice in the game can only be chosen once. If you don't have loops in your story, you'll never notice this behaviour. But if you do use loops, you'll quickly notice your options disappearing...
+
+<pre>=== find_help ===
+\
+You search desperately for a friendly face in the crowd.\
+* The woman in the hat[?] pushes you roughly aside. \-> find_help\
+* The man with the briefcase[?] looks disgusted as you stumble past him. \-> find_help</pre> # editor read-preview --start=find_help
+
++ [next]
+-
+
+<h5>1.2: Sticky choices</h5>
+
+The 'once-only' behaviour is not always what we want, of course, so we have a second kind of choice: the "sticky" choice. A sticky choice is simply one that doesn't get used up, and is marked by a <code>+</code> bullet.
+
+<pre>=== homers_couch ===\
++ [Eat another donut]\
+  You eat another donut. \-> homers_couch\
+* [Get off the couch]\
+  You struggle up off the couch to go and compose epic poetry.\
+  \-> END</pre> # editor read-preview --start=homers_couch
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Conditional choices"]
+-> conditionalChoices
 
 = conditionalChoices
 <h4>Lesson 7: 1. Conditional choices</h4>
 
--> TODO
+You can also turn choices on and off by hand. <strong>Ink</strong> has quite a lot of logic available, but the simplest tests is "has the player seen a particular piece of content".
+
+Every knot/stitch in the game has a unique address (so it can be diverted to), and we use the same address to test if that piece of content has been seen.
+
+<pre>* \{ not visit_paris \} [Go to Paris] \-> visit_paris\
++ \{ visit_paris \} [Return to Paris] \-> visit_paris\
+\
+* \{ visit_paris.met_estelle \} [ Telephone Mme Estelle ] \-> phone_estelle</pre> # editor read-only
+
+<blockquote>the test <code>knot_name</code> is true if any stitch inside that knot has been seen. Note also that conditionals don't override the once-only behaviour of options, so you'll still need sticky options for repeatable choices.</blockquote> # note
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Conditional text"]
+-> conditionalText
 
 = conditionalText
 <h4>Lesson 6: 3. Conditional text</h4>
 
--> TODO
+Text can also vary depending on logical tests, just as options can.
+
+<pre>\{met_blofeld: "I saw him. Only for a moment." \}\
+\
+"His real name was \{met_blofeld.learned_his_name: Franz\|a secret\}."</pre> # editor read-only
+
+These can appear as separate lines, or within a section of content. They can even be nested, so:
+
+<pre>\{met_blofeld: "I saw him. Only for a moment. His real name was \{met_blofeld.learned_his_name: Franz\|kept a secret\}." \| "I missed him. Was he particularly evil?" \}</pre> # editor read-only
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Variable text"]
+-> variableText
 
 = variableText
 <h4>Lesson 6: 2. Variable text</h4>
 
--> TODO
+<h5>2.1: Text can vary</h5>
+
+So far, all the content we've seen has been static, fixed pieces of text. But content can also vary at the moment of being printed.
+
+The simplest variations of text are provided by alternatives, which are selected from depending on some kind of rule. <strong>Ink</strong> supports several types. Alternatives are written inside <code>\{...\}</code> curly brackets, with elements separated by <code>\|</code> symbols (vertical divider lines).
+
+<blockquote>these are only useful if a piece of content is visited more than once!</blockquote> # note
+
++ [next]
+-
+
+<h5>2.2: Types of alternatives</h5>
+
+Sequences (the default): A sequence (or a "stopping block") is a set of alternatives that tracks how many times its been seen, and each time, shows the next element along. When it runs out of new content it continues to show the final element.
+
+<pre>=== knot ===\
+The radio hissed into life. \{"Three!"\|"Two!"\|"One!"\|There was the white noise racket of an explosion.\|But it was just static.\}\
+\
+\{I bought a coffee with my five-pound note.\|I bought a second coffee for my friend.\|I didn't have enough money to buy any more coffee.\}\
+\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+-\
+\-> knot</pre> # editor read-preview --start=knot
+
+Cycles (marked with a <code>&</code>): Cycles are like sequences, but they loop their content.
+
+<pre>=== knot ===\
+It was \{&Monday\|Tuesday\|Wednesday\|Thursday\|Friday\|Saturday\|Sunday\} today.\
+\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+-\
+\-> knot</pre> # editor read-preview --start=knot
+
++ [next]
+-
+
+Once-only (marked with a <code>!</code>): Once-only alternatives are like sequences, but when they run out of new content to display, they display nothing. (You can think of a once-only alternative as a sequence with a blank last entry.)
+
+<pre>=== knot ===\
+He told me a joke. \{!I laughed politely.\|I smiled.\|I grimaced.\|I promised myself to not react again.\}\
+\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+-\
+\-> knot</pre> # editor read-preview --start=knot
+
+Shuffles (marked with a <code>~</code>): Shuffles produce randomised output.
+
+<pre>=== knot ===\
+I tossed the coin. \{~Heads\|Tails\}.\
+\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+* [repeat]\
+-\
+\-> knot</pre> # editor read-preview --start=knot
+
++ [next]
+-
+
+<h5>2.3: Features of Alternatives</h5>
+
+Alternatives can contain blank elements.
+
+<pre>I took a step forward. \{!\|\|\|\|Then the lights went out. \-> eek\}</pre> # editor read-only
+
+Alternatives can be nested.
+
+<pre>The Ratbear \{&\{wastes no time and \|\}swipes\|scratches\} \{&at you\|into your \{&leg\|arm\|cheek\}\}.</pre> # editor read-only
+
+Alternatives can include divert statements.
+
+<pre>I \{waited.\|waited some more.\|snoozed.\|woke up and waited more.\|gave up and left. \-> leave_post_office\}</pre> # editor read-only
+
+They can also be used inside choice text:
+
+<pre>+ "Hello, \{&Master\|Monsieur Fogg\|you\|brown-eyes\}!"[] I declared.</pre> # editor read-only
+
+<blockquote>with one caveat; you can't start an option's text with a <code>\{</code>, as it'll look like a conditional. Unless ... you escape a whitespace <code>\\ </code> before your <code>\{</code> ink will recognise it as text.</blockquote> # note
+
+<pre>+\\ \{&They headed towards the Sandlands\|They set off for the desert\|The party followed the old road South\}</pre> # editor read-only
+
++ [next]
+- (games)
+
+<h5>2.4: Examples</h5>
+
+Alternatives can be used inside loops to create the appearance of intelligent, state-tracking gameplay without particular effort.
+
+Here's a one-knot version of whack-a-mole. Note we use once-only options, and a fallback, to ensure the mole doesn't move around, and the game will always end.
+
+<pre>=== whack_a_mole ===\
+\{I heft the hammer.\|\{~Missed!\|Nothing!\|No good. Where is he?\|Ah-ha! Got him! \-> END\}\}\
+The \{&mole\|\{&nasty\|blasted\|foul\} \{&creature\|rodent\}\} is \{in here somewhere\|hiding somewhere\|still at large\|laughing at me\|still unwhacked\|doomed\}. \<>\
+\{!I'll show him!\|But this time he won't escape!\}\
+* [\{&Hit\|Smash\|Try\} top-left] 	\-> whack_a_mole\
+* [\{&Whallop\|Splat\|Whack\} top-right] \-> whack_a_mole\
+* [\{&Blast\|Hammer\} middle] \-> whack_a_mole\
+* [\{&Clobber\|Bosh\} bottom-left] 	\-> whack_a_mole\
+* [\{&Nail\|Thump\} bottom-right] 	\-> whack_a_mole\
+* \->\
+  Then you collapse from hunger. The mole has defeated you!\
+  \-> END</pre> # editor read-preview --start=whack_a_mole
+
+// TODO: fallback choice may not be presented to the reader, yet
+
+And here's a bit of lifestyle advice. Note the sticky choice - the lure of the television will never fade:
+
+<pre>=== turn_on_television ===\
+I turned on the television \{for the first time\|for the second time\|again\|once more\}, but there was \{nothing good on, so I turned it off again\|still nothing worth watching\|even less to hold my interest than before\|nothing but rubbish\|a program about sharks and I don't like sharks\|nothing on\}.\
++	[Try it again]	 		\-> turn_on_television\
+*	[Go outside instead]	\-> go_outside_instead\
+\
+\=== go_outside_instead ===\
+\-> END</pre> # editor read-preview --start=turn_on_television
+
+
+// TODO: Multiline alternatives
+// ink has another format for making alternatives of varying content blocks, too. See the section on multiline blocks for details.
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Comments"]
+-> comments
 
 = comments
 <h4>Lesson 6: 0. Comments</h4>
 
--> TODO
+By default, all text in your file will appear in the output content, unless specially marked up.
+
+The simplest mark-up is a comment. <strong>Ink</strong> supports two kinds of comment. There's the kind used for someone reading the code, which the compiler ignores:
+
+<pre>"What do you make of this?" she asked.\
+\
+/\/ Something unprintable...\
+\
+"I couldn't possibly comment," I replied.\
+\
+/\*\
+	... or an unlimited block of text\
+*\/</pre> # editor read-preview
+
+and there's the kind used for reminding the author what they need to do, that the compiler prints out during compilation:
+
+<pre>TODO: Write this section properly!</pre> # editor read-preview
+// I have done my part, the example is just a TODO
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Tags"]
+-> tags
 
 = tags
 <h4>Lesson _: _. Tags</h4>
 
--> TODO
+Text content from the game will appear 'as is' when the engine runs. However, it can sometimes be useful to mark up a line of content with extra information to tell the game what to do with that content.
+
+<strong>Ink</strong> provides a simple system for tagging lines of content, with hashtags.
+
+<pre>A line of normal game-text. \# colour it blue</pre> # editor read-preview
+
+These don't show up in the main text flow, but can be read off by the game and used as you see fit.
+/* See "Running Your Ink" for more information. */
+
+
+As you can imagine I'm using these all the time for the inline editor, like the one above. \
+ags can have what ever syntax you (as a developer) like for the story it's just like a comment that can\
+comunicate things to the external system, i.e. outside of the ink engine/runtime.
+
+I've chosen a CLI-like syntax, because I like it.
+
++ [Go back]
+-> Bonus_Lesson
++ [Continue with "Includes"]
+-> includes
 
 = includes
 <h4>Lesson _: _. Includes</h4>
 
--> TODO
+<h5>_.1: Script files can be combined</h5>
 
-= treads
+You can also split your content across multiple files, using an include statement, like so:
+
+<pre>I\NCLUDE newspaper.ink\
+I\NCLUDE cities/vienna.ink\
+I\NCLUDE journeys/orient_express.ink</pre> # editor read-only
+
+Include statements should always go at the top of a file, and not inside knots.
+
+There are no rules about what file a knot must be in to be diverted to. (In other words, separating files has no effect on the game's namespacing).
+
++ [Go back]
+-> Bonus_Lesson
+/*+ [Continue with "Treads"]
+\-> treads
+
+\= treads
 <h4>Lesson _: _. Treads</h4>
 
--> TODO
+\-> TODO
+
+\+ [Go back to "Bonus Lesson"]
+-> Bonus_Lesson*/
++ [Go back to "Table of Content"]
+-> Bonus_Lesson.go_back_really

@@ -3,7 +3,11 @@ INCLUDE lessons/lesson-01-the-flow.ink
 
 VAR SHORTCUTS_ENABLED = false
 
--> ToC
+
+<h1>The stroy of <strong>ink</strong></h1>
+
+* [Start]
+- -> ToC
 
 == TODO ==
 WIP - work in progress (i.e. not done yet)
@@ -29,7 +33,7 @@ Table of Contents
 -> Playground
 
 -
-<-TODO
+WIP - work in progress (i.e. not done yet)
 ->ToC
 
 == Introduction ==
@@ -105,6 +109,8 @@ Lesson _: Advanced Knots - arguments, knot as "function", "~ return"
 Lesson _: Advanced Variables - divert type, local variables (temp), CONST, lists, list operators (has(?), hasnt), "ref" variables
 
 Lesson _: ......
+
+Lesson _: Advanced Flow Control - Tunnels, Treads
 
 Math: POW, RANDOM, MIN, MAX
 
