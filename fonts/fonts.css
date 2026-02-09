@@ -1,3 +1,5 @@
+@import url('./OpenSans-and-Quattrocento.css');
+
 @font-face {
  font-family: 'SpaceMono';
  src: url('./Space_Mono/SpaceMono-Regular.woff2') format('woff2');
