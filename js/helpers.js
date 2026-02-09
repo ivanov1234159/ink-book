@@ -80,3 +80,11 @@ export function contentBottomEdgeY(storyContainer) {
     ? bottomElement.offsetTop + bottomElement.offsetHeight
     : 0;
 }
+
+export function createNote(message, style) {
+  const container = document.createElement("blockquote");
+  container.classList.add("note", style ? `note-${style}` : undefined);
+  container.dataset.type = style;
+  container.textContent = message;
+  return container;
+}

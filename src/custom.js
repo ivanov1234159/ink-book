@@ -2,9 +2,7 @@ import { InkEditor } from "../js/load.js";
 import { registerCommand } from "../js/story.js";
 
 function extractWrapped(html) {
-  const temp = document.createElement("div");
-  temp.innerHTML = html;
-  return temp.firstChild.innerHTML;
+  return html.match(/^<[^>]+>([^\0]*)<\/[^>]+>$/m)[1] ?? html;
 }
 
 function editorCommandBuilder({
@@ -18,9 +16,6 @@ function editorCommandBuilder({
     { $text, $element, $choice },
   ) => {
     let story = extractWrapped($text);
-    if (typeof start === "string" && start.length > 0) {
-      story = `->${start}\n${story}`;
-    }
 
     const controls = [];
     if (withPreview) {
@@ -49,6 +44,7 @@ function editorCommandBuilder({
       classList,
       maxLines,
       maxFill: true,
+      start,
       controls,
     })
       .mountEditor($choice ? $element.querySelector("a, span") : $element, true)
@@ -77,6 +73,7 @@ export default function () {
       return new Error(`Unsupported HTML element. Please use only single "blockquote" element with the "note" tag.`);
     }
     $element.firstChild.classList.add("note");
+    $element.firstChild.dataset.type = "note";
     switch (style) {
       case "info":
         $element.firstChild.classList.add("note-info");

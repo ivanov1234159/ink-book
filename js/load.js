@@ -6,6 +6,7 @@ import {
   scrollDown,
   shallowClone,
   showAfter,
+  createNote,
 } from "./helpers.js";
 
 export async function loadManifest() {
@@ -43,8 +44,10 @@ export class InkEditor {
   $story;
   $code;
   $preview;
+  $errors;
   $controls;
   _controls = [];
+  _editorOptions = undefined;
   _lastInkCompilerOptions = undefined;
 
   constructor(editorOptions = undefined) {
@@ -76,11 +79,13 @@ ${
       }><li spellcheck="false"><br></li></ol></div>`
     : ""
 }
-${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
+${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}
+<div class="editor-errors"></div>`;
 
     this.$controls = this.$editor.querySelector(".controls");
     this.$code = this.$editor.querySelector(".editor-code");
     this.$preview = this.$editor.querySelector(".editor-preview");
+    this.$errors = this.$editor.querySelector(".editor-errors");
 
     // this.$controls.innerHTML = '';
     if (Array.isArray(editorOptions?.controls)) {
@@ -105,6 +110,8 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
 
       this._controls = editorOptions.controls;
     }
+
+    this._editorOptions = editorOptions;
   }
 
   mountEditor(rootElement, clear = false) {
@@ -130,7 +137,21 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
         .join("\n");
     }
 
-    this.$story = compileStory(storyString, inkCompilerOptions);
+    if (typeof this._editorOptions?.start === "string") {
+      storyString = `->${this._editorOptions.start}\n${storyString}`;
+    }
+
+    this.$story = null;
+    try {
+      this.$story = compileStory(storyString, inkCompilerOptions);
+      this.$story.onError = (message, errorType) => {
+        this.$errors.appendChild(
+          createNote(message, errorType === 1 ? "warning" : "error"),
+        );
+      };
+    } catch (e) {
+      this.$errors.appendChild(createNote(e.message, "error"));
+    }
     this._lastInkCompilerOptions = inkCompilerOptions;
     return this;
   }
@@ -157,10 +178,14 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}`;
       if (this.$preview) {
         removeAll(this.$preview, "p");
       }
-      this.$story.ResetState();
-      this.continueStory(true);
+
+      if (this.$story) {
+        this.$story.ResetState();
+        this.continueStory(true);
+      }
       return;
     }
+    this.$errors.innerHTML = '';
 
     if (this.$code) {
       const storyString = Array.from(this.$code.children)
