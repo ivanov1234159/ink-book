@@ -42,6 +42,7 @@ body {
     --editor-lines-count-max: 30;
     display: grid;
     grid-template-areas: "controls controls" "code preview" "errors errors";
+    grid-auto-columns: 1fr;
     column-gap: 1rem;
     font-weight: lighter;
     color: var(--editor-neutral-color);
@@ -106,6 +107,7 @@ body {
         border-left: 0.4rem solid hsl(204, 70%, 53%);
         line-height: 1.7em;
         padding: 0.5rem;
+        text-align: start;
         &::before {
             content: attr(data-type) ": ";
             font-weight: bold;
@@ -132,6 +134,15 @@ body {
 
         .dark & {
             background-color: hsl(352, 58%, 30%);
+        }
+    }
+
+    blockquote.note.note-warning {
+        background-color: hsl(42, 59%, 80%);
+        border-left: 0.4rem solid hsl(44, 70%, 53%);
+
+        .dark & {
+            background-color: hsl(42, 58%, 50%);
         }
     }
 }
@@ -206,9 +217,9 @@ body {
         font-weight: bold;
     }
 
-    pre {
+    /* pre {
         display: inline-block;
-    }
+    } */
 
     /*
         Class applied to all choices
@@ -337,17 +348,22 @@ body {
     border-radius: 0.5rem;
     outline: none;
     text-align: start;
+    font-family: 'SpaceMono', monospace;
 
     max-height: calc(1lh + var(--editor-lines-count-max, 0) * 1lh);
     overflow-y: scroll;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
 
     display: grid;
     grid-template-columns: minmax(2.5rem, auto) 1fr;
-    grid-template-rows: 1.5lh repeat(auto-fit, 1lh) [repeat-end];
+    grid-template-rows: 1.5lh repeat(auto-fit, minmax(1lh, auto)) [repeat-end];
 
     &.max-fill {
-        grid-template-rows: 1.5lh repeat(auto-fill, 1lh) [repeat-end];
+        grid-template-rows: 1.5lh repeat(auto-fill, minmax(1lh, auto)) [repeat-end];
+    }
+
+    &:not([contenteditable]), &:not([contenteditable="true"]) {
+        user-select: none;
     }
 }
 

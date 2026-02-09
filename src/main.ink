@@ -14,9 +14,11 @@ WIP - work in progress (i.e. not done yet)
 -> DONE
 
 == ToC ==
-Table of Contents
+# clear
+<h1>The stroy of <strong>ink</strong></h1>
 
 + [Introduction]
+# clear
 -> Introduction
 + [Lesson 1: The Flow]
 -> Lesson_01_The_Flow
@@ -27,13 +29,15 @@ Table of Contents
 + [Lesson 6: Advanced Content (WIP)]
 + [Lesson 7: Advanced Choices (WIP)]
 + [About & Bonus Lesson]
+# clear
 -> About
-+ [Index (WIP)]
+//+ [Index (WIP)]
 + [Playground: writable editor]
 -> Playground
 
 -
 WIP - work in progress (i.e. not done yet)
++ [Go back]
 ->ToC
 
 == Introduction ==

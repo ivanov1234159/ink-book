@@ -12,17 +12,19 @@ that I use while writing this and haven't made it to the lessons, yet.
 + [Continue with the Bonus Lesson]
   -> Bonus_Lesson
 + [Try some mini games]
+  # clear
   -> Bonus_Lesson.variableText.games
 + [Go back]
     -> ToC
 
 == Bonus_Lesson
+# clear
 <h3>Bonus Lesson</h3>
 
 {I have used some <i>advanced</i> syntax that haven't made it to the book, yet.\
 So here are all the parts of this lesson, feel free to jump around in any order you like.|}
 
-+ [&lt;&gt; Glue &lt;&gt; \| from Lesson 6 {glue: (completed)}]
++ [\<> Glue \<> \| from Lesson 6 {glue: (completed)}]
 ->glue
 + [- Gathers \| from Lesson 2 {gathers: (completed)}]
 ->gathers
@@ -65,14 +67,17 @@ So here are all the parts of this lesson, feel free to jump around in any order 
 //->treads
 
 + (go_back_really) [Go back]
+    # clear
     Oh, before you go ... I'm going to grant you access to all of the shortcuts that are available in the lessons.
     ~ SHORTCUTS_ENABLED = true
-    -> ToC
+    + + [Okay]
+      -> ToC
 
 = glue
+# clear
 <h4>Lesson 6: 2. Glue</h4>
 
-The default behaviour inserts line-breaks before every new line of content. In some cases, however, content must insist on not having a line-break, and it can do so using <code>&gt;&lt;</code>, or "glue".
+The default behaviour inserts line-breaks before every new line of content. In some cases, however, content must insist on not having a line-break, and it can do so using <code>&lt;&gt;</code>, or "glue".
 
 <pre>=== hurry_home ===\
 We hurried home \<>\
@@ -83,9 +88,8 @@ to Savile Row\
 \-> as_fast_as_we_could\
 \
 \=== as_fast_as_we_could ===\
-\<> as fast as we could.</pre> # editor read-preview --start=hurry_home
-
-// TODO: see html and maybe replace <> with &lt;&gt;
+\<> as fast as we could.\
+\-> END</pre> # editor read-preview --start=hurry_home
 
 You can't use too much glue: multiple glues next to each other have no additional effect. (And there's no way to "negate" a glue; once a line is sticky, it'll stick.)
 
@@ -95,6 +99,7 @@ You can't use too much glue: multiple glues next to each other have no additiona
 -> gathers
 
 = gathers
+# clear
 <h4>Lesson 2: 1. Gathers</h4>
 
 <h5>1.1: Gather points gather the flow back together</h5>
@@ -122,6 +127,7 @@ In a real game, all three of these options might well lead to the same conclusio
 
 + [next]
 - (gathers_part_2)
+# clear
 
 <h5>1.2: Options and gathers form chains of content</h5>
 
@@ -130,23 +136,24 @@ We can string these gather-and-branch sections together to make branchy sequence
 <pre>=== escape ===\
 I ran through the forest, the dogs snapping at my heels.\
 \
-	* 	I checked the jewels[] were still in my pocket, and the feel of them brought a spring to my step. <>\
+* I checked the jewels[] were still in my pocket, and the feel of them brought a spring to my step. \<>\
 \
-	*  I did not pause for breath[] but kept on running. <>\
+* I did not pause for breath[] but kept on running. \<>\
 \
-	*	I cheered with joy. <>\
+* I cheered with joy. \<>\
 \
-- 	The road could not be much further! Mackie would have the engine running, and then I'd be safe.\
+- The road could not be much further! Mackie would have the engine running, and then I'd be safe.\
 \
-	*	I reached the road and looked about[]. And would you believe it?\
-	* 	I should interrupt to say Mackie is normally very reliable[]. He's never once let me down. Or rather, never once,\ previously to that night.\
+* I reached the road and looked about[]. And would you believe it?\
+* I should interrupt to say Mackie is normally very reliable[]. He's never once let me down. Or rather, never once, previously to that night.\
 \
--	The road was empty. Mackie was nowhere to be seen.</pre> # editor read-preview
+- The road was empty. Mackie was nowhere to be seen.</pre> # editor read-preview
 
 This is the most basic kind of weave. The rest of this section details additional features that allow weaves to nest, contain side-tracks and diversions, divert within themselves, and above all, reference earlier choices to influence later ones.
 
 + [next]
 - (gather_part_3)
+# clear
 
 <h5>1.3: The weave philosophy</h5>
 
@@ -162,6 +169,7 @@ Weaves also allow for easy redrafting of choice-points; in particular, it's easy
 -> nestingChoicesAndGathers
 
 = nestingChoicesAndGathers
+# clear
 <h4>Lesson 2: 2. Nesting choices and gathers (i.e. Nested Flow)</h4>
 
 The weaves shown eariler are quite simple, "flat" structures. Whatever the player does, they take the same number of turns to get from top to bottom. However, sometimes certain choices warrant a bit more depth or complexity.
@@ -172,6 +180,7 @@ This section comes with a warning. Nested weaves are very powerful and very comp
 
 + [next]
 - (nestingChoicesAndGathers_part_1)
+# clear
 
 <h5>2.1: Options can be nested</h5>
 
@@ -200,6 +209,7 @@ Also the spacing between the asterisks (for choices) and the dashes (for gathers
 
 + [next]
 -
+# clear
 
 And should we want to add new sub-options to the other route, we do that in similar fashion.
 
@@ -221,6 +231,7 @@ But what if we want a more extended sub-scene?
 
 + [next]
 - (nestingChoicesAndGathers_part_2)
+# clear
 
 <h5>2.2: Gather points can be nested too</h5>
 
@@ -251,6 +262,7 @@ The basic idea is this: options separate the paths of the story, and gathers bri
 
 + [next]
 - (nestingChoicesAndGathers_part_3)
+# clear
 
 <h5>2.3: You can nest as many levels are you like</h5>
 
@@ -271,6 +283,7 @@ But, in theory at least, you could write your entire story as a single weave.
 
 + [next]
 - (nestingChoicesAndGathers_part_4)
+# clear
 
 <h5>2.4: Example: a conversation with nested nodes</h5>
 
@@ -289,10 +302,10 @@ Here's a longer example:
       'That is what we will endeavour to find out,' he answered.\
     * * * 'A modest wager, I trust?'\
       'Twenty thousand pounds,' he replied, quite flatly.\
-    * * * I asked nothing further of him then[.], and after a final, polite cough, he offered nothing more to me. <>\
+    * * * I asked nothing further of him then[.], and after a final, polite cough, he offered nothing more to me. \<>\
   * * 'Ah[.'],' I replied, uncertain what I thought.\
-  - - After that, <>\
-* ... but I said nothing[] and <>\
+  - - After that, \<>\
+* ... but I said nothing[] and \<>\
 - we passed the day in silence.\
 \-> END</pre> # editor read-preview
 
@@ -304,6 +317,7 @@ Hopefully, this demonstrates the philosophy laid out above: that weaves offer a 
 -> labelingChoicesAndGathers
 
 = labelingChoicesAndGathers
+# clear
 <h4>Lesson 7: 2. Labeling choices and gathers (i.e. Tracking a Weave)</h4>
 
 Sometimes, the weave structure is sufficient. But when it's not, we need a bit more control.
@@ -316,6 +330,7 @@ But should we want to remember what the player has seen, we can add in labels wh
 
 + [next]
 - (labelingChoicesAndGathers_part_2)
+# clear
 
 <h5>2.2: Gathers and options can be labelled</h5>
 
@@ -349,7 +364,7 @@ The guard frowns at you.\
 - 'Mff,' the guard replies, and then offers you a paper bag. 'Toffee?'\
 \-> DONE\
 \
-\/\/ somewhere else:
+\/\/ somewhere else:\
 \=== fight_guard ===\
 ...\
 \-> DONE</pre> # editor read-preview --start=meet_guard
@@ -357,6 +372,7 @@ The guard frowns at you.\
 
 + [next]
 - (labelingChoicesAndGathers_part_3)
+# clear
 
 <h5>2.3: Scope</h5>
 
@@ -396,6 +412,7 @@ TODO: in "Lesson 7: 3. Loops with labeled choices"
 -> globalVariables
 
 = globalVariables
+# clear
 /*
 <h3>Lesson 5: Variables</h3>
 
@@ -418,10 +435,11 @@ Global variables can be defined anywhere, via a <code>VAR</code> statement. They
 VAR players_name = "Emilia"\
 VAR number_of_infected_people = 521\
 VAR chance_of_infection = 0.15\
-VAR current_epilogue = \-> they_all_die_of_the_plague</pre> # editor read-only
+VAR current_epilogue = \-> they_all_die_of_the_plague</pre> # editor read-only --show-errors=false
 
 + [next]
 - (globalVariables_part_2)
+# clear
 
 <h5>1.2: Using Global Variables</h5>
 
@@ -441,6 +459,7 @@ The train jolted and rattled. \{ mood > 0:I was feeling positive enough, however
 
 + [next]
 - (globalVariables_part_3)
+# clear
 
 <h5>1.3: Printing variables</h5>
 
@@ -450,7 +469,7 @@ The value of a variable can be printed as content using an inline syntax similar
 <pre>VAR friendly_name_of_player = "Jackie"\
 VAR age = 23\
 \
-My name is Jean Passepartout, but my friends call me \{friendly_name_of_player\}. I'm \{age\} years old.</pre> # edotir read-preview
+My name is Jean Passepartout, but my friends call me \{friendly_name_of_player\}. I'm \{age\} years old.</pre> # editor read-preview
 
 /*
 This can be useful in debugging. For more complex printing based on logic and variables, see the section on functions.
@@ -462,6 +481,7 @@ This can be useful in debugging. For more complex printing based on logic and va
 -> evaluation
 
 = evaluation
+# clear
 <h4>Lesson 5: 2. Evaluation</h4>
 
 It might be noticed that previously we refered to variables as being able to contain "content", rather than "strings". That was deliberate, because a string defined in <strong>ink</strong> can contain ink - although it will always evaluate to a string. (Yikes!)
@@ -472,7 +492,7 @@ An evaluation line starts with <code>~</code> and represents some mutaiton of a 
 
 <pre>VAR a_colour = ""\
 \
-~ a_colour = "\{~red\|blue\|green\|yellow\}"'
+~ a_colour = "\{~red\|blue\|green\|yellow\}"\
 \
 \{a_colour\}</pre> # editor read-preview
 
@@ -484,13 +504,13 @@ Note that once a piece of content like this is evaluated, its value is "sticky".
 
 <pre>VAR a_colour = ""\
 \
-~ a_colour = "{~red|blue|green|yellow}"'
+~ a_colour = "\{~red\|blue\|green\|yellow\}"\
 \
 The goon hits you, and sparks fly before you eyes, \{a_colour\} and \{a_colour\}.</pre> # editor read-preview
 
 
 This is also why the following is explicitly disallowed; it would be evaluated on the construction of the story, which probably isn't what you want.
-<pre>VAR a_colour = "{~red|blue|green|yellow}"</pre> # editor read-only
+<pre>VAR a_colour = "\{~red\|blue\|green\|yellow\}"</pre> # editor read-only --lines=3 --show-errors=false
 
 + [Go back]
 -> Bonus_Lesson
@@ -498,6 +518,7 @@ This is also why the following is explicitly disallowed; it would be evaluated o
 -> knotsAsVariables
 
 = knotsAsVariables
+# clear
 <h4>Lesson 5: 4. Knots as variables - knot read count</h4>
 
 Technically, knots and stiches (and labeled choices and gathers also) are also variables. They are of the number type and thier value represent the number of times the knot/stich (or choice, or gather) have been visited so far.
@@ -519,6 +540,8 @@ Technically, knots and stiches (and labeled choices and gathers also) are also v
 "stich2.choice2" was visited \{stich2.choice2\} time\{stich2.choice2!=1:s\}\
 "stich2.choice3" was visited \{stich2.choice3\} time\{stich2.choice3!=1:s\}\
 "stich2.gather" was visited \{stich2.gather\} time\{stich2.gather!=1:s\}\
+\
+\-> stich1\
 \
 \= stich1\
 + (choice1) [choice 1: go to gather & stich 2]\
@@ -546,6 +569,7 @@ Technically, knots and stiches (and labeled choices and gathers also) are also v
 -> knotArguments
 
 = knotArguments
+# clear
 <h4>Lesson _: _. Knot arguments</h4>
 
 <h5>_.1: Knots and stitches can take parameters</h5>
@@ -574,6 +598,7 @@ Any knot or stitch can be given a value as a parameter.
 -> mathAndLogic
 
 = mathAndLogic
+# clear
 <h4>Lesson 5: 3. Selected part of Math & Logic</h4>
 
 <h5>3.1: Math?</h5>
@@ -582,7 +607,7 @@ Any knot or stitch can be given a value as a parameter.
 
 <pre>\{1 + 2\} is 3.\
 \{POW(3, 2)\} is 9.\
-\{POW(16, 0.5)\} is 4.<pre> # editor read-preview
+\{POW(16, 0.5)\} is 4.</pre> # editor read-preview
 
 
 /*
@@ -591,12 +616,13 @@ If more complex operations are required, one can write functions (using recursio
 
 + [next]
 -
+# clear
 
 <h5>3.2: Logical operators: AND and OR</h5>
 
 Ink supports <code>and</code> (also written as <code>&&</code>) and <code>or</code> (also written as <code>\|\|</code>) in the usual way, as well as brackets.
 
-<pre>* \{ not (visit_paris or visit_rome) && (visit_london \|\| visit_new_york) \} [ Wait. Go where? I'm confused. ] \-> visit_someplace</pre> # editor read-only
+<pre>* \{ not (visit_paris or visit_rome) && (visit_london \|\| visit_new_york) \} [ Wait. Go where? I'm confused. ] \-> visit_someplace</pre> # editor read-only --lines=4 --show-errors=false
 
 For non-programmers <code>X and Y</code> means both X and Y must be true, in contrast <code>X or Y</code> means either or both. We don't have a <code>xor</code>.
 
@@ -608,13 +634,14 @@ For non-programmers <code>X and Y</code> means both X and Y must be true, in con
 -> stickyChoices
 
 = stickyChoices
+# clear
 <h4>Lesson 3: 1. Sticky choices</h4>
 
 <h5>1.1: Choices can only be used once</h5>
 
 By default, every choice in the game can only be chosen once. If you don't have loops in your story, you'll never notice this behaviour. But if you do use loops, you'll quickly notice your options disappearing...
 
-<pre>=== find_help ===
+<pre>=== find_help ===\
 \
 You search desperately for a friendly face in the crowd.\
 * The woman in the hat[?] pushes you roughly aside. \-> find_help\
@@ -622,6 +649,7 @@ You search desperately for a friendly face in the crowd.\
 
 + [next]
 -
+# clear
 
 <h5>1.2: Sticky choices</h5>
 
@@ -640,6 +668,7 @@ The 'once-only' behaviour is not always what we want, of course, so we have a se
 -> conditionalChoices
 
 = conditionalChoices
+# clear
 <h4>Lesson 7: 1. Conditional choices</h4>
 
 You can also turn choices on and off by hand. <strong>Ink</strong> has quite a lot of logic available, but the simplest tests is "has the player seen a particular piece of content".
@@ -649,7 +678,7 @@ Every knot/stitch in the game has a unique address (so it can be diverted to), a
 <pre>* \{ not visit_paris \} [Go to Paris] \-> visit_paris\
 + \{ visit_paris \} [Return to Paris] \-> visit_paris\
 \
-* \{ visit_paris.met_estelle \} [ Telephone Mme Estelle ] \-> phone_estelle</pre> # editor read-only
+* \{ visit_paris.met_estelle \} [ Telephone Mme Estelle ] \-> phone_estelle</pre> # editor read-only --lines=6 --show-errors=false
 
 <blockquote>the test <code>knot_name</code> is true if any stitch inside that knot has been seen. Note also that conditionals don't override the once-only behaviour of options, so you'll still need sticky options for repeatable choices.</blockquote> # note
 
@@ -659,17 +688,18 @@ Every knot/stitch in the game has a unique address (so it can be diverted to), a
 -> conditionalText
 
 = conditionalText
+# clear
 <h4>Lesson 6: 3. Conditional text</h4>
 
 Text can also vary depending on logical tests, just as options can.
 
 <pre>\{met_blofeld: "I saw him. Only for a moment." \}\
 \
-"His real name was \{met_blofeld.learned_his_name: Franz\|a secret\}."</pre> # editor read-only
+"His real name was \{met_blofeld.learned_his_name: Franz\|a secret\}."</pre> # editor read-only --lines=6 --show-errors=false
 
 These can appear as separate lines, or within a section of content. They can even be nested, so:
 
-<pre>\{met_blofeld: "I saw him. Only for a moment. His real name was \{met_blofeld.learned_his_name: Franz\|kept a secret\}." \| "I missed him. Was he particularly evil?" \}</pre> # editor read-only
+<pre>\{met_blofeld: "I saw him. Only for a moment. His real name was \{met_blofeld.learned_his_name: Franz\|kept a secret\}." \| "I missed him. Was he particularly evil?" \}</pre> # editor read-only --lines=6 --show-errors=false
 
 + [Go back]
 -> Bonus_Lesson
@@ -677,6 +707,7 @@ These can appear as separate lines, or within a section of content. They can eve
 -> variableText
 
 = variableText
+# clear
 <h4>Lesson 6: 2. Variable text</h4>
 
 <h5>2.1: Text can vary</h5>
@@ -689,6 +720,7 @@ The simplest variations of text are provided by alternatives, which are selected
 
 + [next]
 -
+# clear
 
 <h5>2.2: Types of alternatives</h5>
 
@@ -699,12 +731,7 @@ The radio hissed into life. \{"Three!"\|"Two!"\|"One!"\|There was the white nois
 \
 \{I bought a coffee with my five-pound note.\|I bought a second coffee for my friend.\|I didn't have enough money to buy any more coffee.\}\
 \
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
++ [repeat]\
 -\
 \-> knot</pre> # editor read-preview --start=knot
 
@@ -713,33 +740,20 @@ Cycles (marked with a <code>&</code>): Cycles are like sequences, but they loop 
 <pre>=== knot ===\
 It was \{&Monday\|Tuesday\|Wednesday\|Thursday\|Friday\|Saturday\|Sunday\} today.\
 \
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
++ [repeat]\
 -\
 \-> knot</pre> # editor read-preview --start=knot
 
 + [next]
 -
+# clear
 
 Once-only (marked with a <code>!</code>): Once-only alternatives are like sequences, but when they run out of new content to display, they display nothing. (You can think of a once-only alternative as a sequence with a blank last entry.)
 
 <pre>=== knot ===\
 He told me a joke. \{!I laughed politely.\|I smiled.\|I grimaced.\|I promised myself to not react again.\}\
 \
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
++ [repeat]\
 -\
 \-> knot</pre> # editor read-preview --start=knot
 
@@ -748,42 +762,39 @@ Shuffles (marked with a <code>~</code>): Shuffles produce randomised output.
 <pre>=== knot ===\
 I tossed the coin. \{~Heads\|Tails\}.\
 \
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
-* [repeat]\
++ [repeat]\
 -\
 \-> knot</pre> # editor read-preview --start=knot
 
 + [next]
 -
+# clear
 
 <h5>2.3: Features of Alternatives</h5>
 
 Alternatives can contain blank elements.
 
-<pre>I took a step forward. \{!\|\|\|\|Then the lights went out. \-> eek\}</pre> # editor read-only
+<pre>I took a step forward. \{!\|\|\|\|Then the lights went out. \-> eek\}</pre> # editor read-only --lines=6 --show-errors=false
 
 Alternatives can be nested.
 
-<pre>The Ratbear \{&\{wastes no time and \|\}swipes\|scratches\} \{&at you\|into your \{&leg\|arm\|cheek\}\}.</pre> # editor read-only
+<pre>The Ratbear \{&\{wastes no time and \|\}swipes\|scratches\} \{&at you\|into your \{&leg\|arm\|cheek\}\}.</pre> # editor read-only --lines=6
 
 Alternatives can include divert statements.
 
-<pre>I \{waited.\|waited some more.\|snoozed.\|woke up and waited more.\|gave up and left. \-> leave_post_office\}</pre> # editor read-only
+<pre>I \{waited.\|waited some more.\|snoozed.\|woke up and waited more.\|gave up and left. \-> leave_post_office\}</pre> # editor read-only --lines=6 --show-errors=false
 
 They can also be used inside choice text:
 
-<pre>+ "Hello, \{&Master\|Monsieur Fogg\|you\|brown-eyes\}!"[] I declared.</pre> # editor read-only
+<pre>+ "Hello, \{&Master\|Monsieur Fogg\|you\|brown-eyes\}!"[] I declared.</pre> # editor read-only --lines=6
 
 <blockquote>with one caveat; you can't start an option's text with a <code>\{</code>, as it'll look like a conditional. Unless ... you escape a whitespace <code>\\ </code> before your <code>\{</code> ink will recognise it as text.</blockquote> # note
 
-<pre>+\\ \{&They headed towards the Sandlands\|They set off for the desert\|The party followed the old road South\}</pre> # editor read-only
+<pre>+\\ \{&They headed towards the Sandlands\|They set off for the desert\|The party followed the old road South\}</pre> # editor read-only --lines=6
 
 + [next]
 - (games)
+# clear
 
 <h5>2.4: Examples</h5>
 
@@ -826,6 +837,7 @@ I turned on the television \{for the first time\|for the second time\|again\|onc
 -> comments
 
 = comments
+# clear
 <h4>Lesson 6: 0. Comments</h4>
 
 By default, all text in your file will appear in the output content, unless specially marked up.
@@ -853,6 +865,7 @@ and there's the kind used for reminding the author what they need to do, that th
 -> tags
 
 = tags
+# clear
 <h4>Lesson _: _. Tags</h4>
 
 Text content from the game will appear 'as is' when the engine runs. However, it can sometimes be useful to mark up a line of content with extra information to tell the game what to do with that content.
@@ -877,6 +890,7 @@ I've chosen a CLI-like syntax, because I like it.
 -> includes
 
 = includes
+# clear
 <h4>Lesson _: _. Includes</h4>
 
 <h5>_.1: Script files can be combined</h5>
@@ -885,7 +899,7 @@ You can also split your content across multiple files, using an include statemen
 
 <pre>I\NCLUDE newspaper.ink\
 I\NCLUDE cities/vienna.ink\
-I\NCLUDE journeys/orient_express.ink</pre> # editor read-only
+I\NCLUDE journeys/orient_express.ink</pre> # editor read-only --show-errors=false
 
 Include statements should always go at the top of a file, and not inside knots.
 

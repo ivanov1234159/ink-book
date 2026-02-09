@@ -138,19 +138,29 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}
     }
 
     if (typeof this._editorOptions?.start === "string") {
-      storyString = `->${this._editorOptions.start}\n${storyString}`;
+      let i = storyString.lastIndexOf("INCLUDE ");
+      if (i >= 0) {
+        i = storyString.indexOf('\n', i);
+        storyString = `${storyString.substring(0, i)}\n->${this._editorOptions.start}${storyString.substring(i)}`;
+      } else {
+        storyString = `->${this._editorOptions.start}\n${storyString}`;
+      }
     }
 
     this.$story = null;
     try {
       this.$story = compileStory(storyString, inkCompilerOptions);
       this.$story.onError = (message, errorType) => {
-        this.$errors.appendChild(
-          createNote(message, errorType === 1 ? "warning" : "error"),
-        );
+        if (this._editorOptions?.showRuntimeErrors) {
+          this.$errors.appendChild(
+            createNote(message, errorType === 1 ? "warning" : "error"),
+          );
+        }
       };
     } catch (e) {
-      this.$errors.appendChild(createNote(e.message, "error"));
+      if (this._editorOptions?.showCompileErrors) {
+        this.$errors.appendChild(createNote(e.message, "error"));
+      }
     }
     this._lastInkCompilerOptions = inkCompilerOptions;
     return this;
@@ -185,7 +195,7 @@ ${editorOptions?.withPreview ? `<div class="editor-preview"></div>` : ""}
       }
       return;
     }
-    this.$errors.innerHTML = '';
+    this.$errors.innerHTML = "";
 
     if (this.$code) {
       const storyString = Array.from(this.$code.children)

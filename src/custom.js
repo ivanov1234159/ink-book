@@ -12,7 +12,7 @@ function editorCommandBuilder({
 } = {}) {
   return (
     _,
-    { start, id, "class-list": classList, lines: maxLines = 10 },
+    { start, id, "class-list": classList, "show-errors": showCompileErrors = true, lines: maxLines = 10 },
     { $text, $element, $choice },
   ) => {
     let story = extractWrapped($text);
@@ -45,6 +45,8 @@ function editorCommandBuilder({
       maxLines,
       maxFill: true,
       start,
+      showRuntimeErrors: showCompileErrors && !readonly,
+      showCompileErrors,
       controls,
     })
       .mountEditor($choice ? $element.querySelector("a, span") : $element, true)
@@ -74,9 +76,11 @@ export default function () {
     }
     $element.firstChild.classList.add("note");
     $element.firstChild.dataset.type = "note";
+    $element.firstChild.classList.add(`note-${style}`);
     switch (style) {
-      case "info":
-        $element.firstChild.classList.add("note-info");
+      case "error":
+      case "warning":
+        $element.firstChild.dataset.type = style;
         break;
     }
   });

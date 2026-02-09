@@ -9,7 +9,7 @@ Lesson 1.3: Basic Knots - knots, diverts, stiches (naming things),
 
 
 == Lesson_01_The_Flow ==
-
+# clear
 <h3>Lesson 1: The Flow</h3>
 
 In <strong>ink</strong>, the story flow is the main thing that holds everything together. The flow is simply one story path that the player/user can take while navigating it.
@@ -81,11 +81,11 @@ we will look into in this book, but if you need to opt out from such\
 behaviour, you can escape characters using "\\" (backslash).
 
 * [Question 1]
+# clear
 ->Question_1(0)
 
 
 = Question_1(wrong_attempts)
-
 Q: What is the right <strong>ink</strong> script that prints "Hello world"?
 
 * <pre>print("Hello world")</pre>
@@ -118,6 +118,7 @@ Q: What is the right <strong>ink</strong> script that prints "Hello world"?
 }
 
 * [Question 2]
+# clear
 ->Question_2
 
 
@@ -158,7 +159,7 @@ Great! That's all!\
 ->nextChapter}
 
 = basicChoices
-
+# clear
 <h4>2. Basics Choices</h4>
 
 <h5>2.1: Text choises</h5>
@@ -175,6 +176,7 @@ Play around with the following example:
 
 * [next]
 - (basicChoices_part_2)
+# clear
 
 <h5>2.2: Suppressing choice text</h5>
 
@@ -189,6 +191,7 @@ Here is an example:
 
 * [next]
 - (basicChoices_part_3)
+# clear
 
 <h5>2.3: Mixing choice and output text</h5>
 
@@ -206,6 +209,7 @@ This is most useful when writing dialogue choices:
 
 * [next]
 - (basicChoices_part_4)
+# clear
 
 <h5>2.4: Multiple Choices</h5>
 
@@ -224,6 +228,7 @@ from one point to another based on what the player/user chooses. To do that, we 
 structure, but before that lets answer some questions about choices.
 
 * [Question 3]
+# clear
 ->Question_3
 
 = Question_3
@@ -283,7 +288,7 @@ to Savile Row as fast as we could.</pre> # editor read-only --class-list\[\]=cho
 ->Question_3
 
 = basicKnots
-
+# clear
 <h4>3. Basics Knots</h4>
 
 <h5>3.1: Pieces of content are called "knots"</h5>
@@ -307,10 +312,11 @@ We arrived into London at 9.45pm exactly.</pre>
 
 * [next]
 - (basicKnots_part_2)
+# clear
 
 <h5>3.2: Knots "divert" to knots</h5>
 
-You can tell the story to move from one knot to another using <pre>\-></pre>, a "divert arrow". Diverts happen immediately without any user input. The whitespace aftrer the arrow and before the knot name is irrelevant.
+You can tell the story to move from one knot to another using <code>\-></code>, a "divert arrow". Diverts happen immediately without any user input. The whitespace aftrer the arrow and before the knot name is irrelevant.
 
 <pre>=== back_in_london ===\
 \
@@ -318,9 +324,9 @@ We arrived into London at 9.45pm exactly.\
 \-> hurry_home\
 \
 \=== hurry_home ===\
-We hurried home to Savile Row as fast as we could.<pre>
+We hurried home to Savile Row as fast as we could.</pre> # editor read-only
 
-<blockquote>When you start an ink file, content outside of knots will be run automatically. But knots won't. So if you start using knots to hold your content, you'll need to tell the game where to go. We do this with a divert arrow <pre>\-></pre>.</blockquote> # note
+<blockquote>When you start an ink file, content outside of knots will be run automatically. But knots won't. So if you start using knots to hold your content, you'll need to tell the game where to go. We do this with a divert arrow (<code>\-></code>).</blockquote> # note
 
 * [next]
 -
@@ -330,18 +336,19 @@ A knottier "hello world" example:
 <pre>\-> top_knot\
 \
 \=== top_knot ===\
-Hello world!</pre>
+Hello world!</pre> # editor read-only
 
-However, strong>ink</strong> doesn't like loose ends, and produces a warning on compilation and/or run-time when it thinks this has happened. The script above produces this on compilation:
+However, <strong>ink</strong> doesn't like loose ends, and produces a warning on compilation and/or run-time when it thinks this has happened. The script above produces this on compilation:
 
-<blockquote>WARNING: Apparent loose end exists where the flow runs out. Do you need a '\-> END' statement, choice or divert? on line 3 of tests/test.ink</blockquote>
+<blockquote>Apparent loose end exists where the flow runs out. Do you need a '\-> END' statement, choice or divert? on line 3 of tests/test.ink</blockquote> # note --style=warning
 
 and this on running:
 
-<blockquote>Runtime error in tests/test.ink line 3: ran out of content. Do you need a '\-> DONE' or '\-> END'?</blockquote>
+<blockquote>Runtime error in tests/test.ink line 3: ran out of content. Do you need a '\-> DONE' or '\-> END'?</blockquote> # note --style=error
 
 * [next]
 -
+# clear
 
 The following plays and compiles without error:
 
@@ -351,10 +358,11 @@ The following plays and compiles without error:
 Hello world!\
 \-> END</pre> # editor read-preview
 
-<pre>\-> END</pre> is a marker for both the writer and the compiler; it means "the story should now stop".
-<pre>\-> DONE</pre> is another marker that we'll explain in a later lesson, but for now, lets say it means "this flow is now completed".
+<code>\-> END</code> is a marker for both the writer and the compiler; it means "the story should now stop".
+<code>\-> DONE</code> is another marker that we'll explain in a later lesson, but for now, lets say it means "this flow is now completed".
 
 * [Question 4]
+# clear
 - (Question_4)
 Q: Which of the following plays successfully without errors, nor warnings?
 
@@ -369,7 +377,7 @@ to Savile Row\
 \
 \== as_fast_as_we_could\
 as fast as we could.\
-\->END</pre> # editor read-only --class-list\[\]=editor-choice]
+\->END</pre> # editor read-only --class-list\[\]=choice-editor]
     Yes, indeed, that's correct!
     * * [next]
     -> basicKnots_part_3
@@ -383,7 +391,7 @@ to Savile Row\
 \-> as_fast_as_we_could\
 \
 \== as_fast_as_we_could ==\
-as fast as we could.</pre> # editor read-only --class-list\[\]=editor-choice]
+as fast as we could.</pre> # editor read-only --class-list\[\]=choice-editor]
     Sorry, lets remember that in every valid script a knot always ends with\
     some divert. You wana try again?
     -> Question_4
@@ -397,7 +405,7 @@ to Savile Row\
 \
 \== as_fast_as_we_could ==\
 as fast as we could.\
-\->END</pre> # editor read-only --class-list\[\]=editor-choice]
+\->END</pre> # editor read-only --class-list\[\]=choice-editor]
     Unfortunately, no, it's not this one. You are missing to provide\
     a starting point of the stroy and so this story would not play as intended.\
     Here, have another shot.
@@ -411,12 +419,13 @@ to Savile Row\
 \-> as_fast_as_we_could\
 \
 \== as_fast_as_we_could ==\
-as fast as we could.</pre> # editor read-only --class-list\[\]=editor-choice]
+as fast as we could.</pre> # editor read-only --class-list\[\]=choice-editor]
     What did you forget? Remember that some special diverts had to be used\
     somewhere. Do your best next time. What about now?
     -> Question_4
 
 - (basicKnots_part_3)
+# clear
 
 <h5>3.3: Diverts are invisible</h5>
 
@@ -433,6 +442,7 @@ as fast as we could.\
 
 * [next]
 - (basicKnots_part_4)
+# clear
 
 <h5>3.4: Knots can be subdivided into "stiches"</h5>
 
@@ -458,10 +468,11 @@ Stitches have unique names within the knot; a stitch can be diverted to using it
     \-> the_orient_express.in_third_class\
 \
 *   [Travel in the guard's van]\
-    \-> the_orient_express.in_the_guards_van</pre> # editor read-only
+    \-> the_orient_express.in_the_guards_van</pre> # editor read-only --show-errors=false
 
 * [next]
 - (basicKnots_part_5)
+# clear
 
 <h5>3.5: The first stitch is the default</h5>
 
@@ -469,13 +480,13 @@ Diverting to a knot which contains stitches will divert to the first stitch in t
 
 <pre>*   [Travel in first class]\
     "First class, Monsieur. Where else?"\
-    \-> the_orient_express</pre> # editor read-only
+    \-> the_orient_express</pre> # editor read-only --show-errors=false
 
 is the same as:
 
 <pre>*   [Travel in first class]\
     "First class, Monsieur. Where else?"\
-    \-> the_orient_express.in_first_class</pre> # editor read-only
+    \-> the_orient_express.in_first_class</pre> # editor read-only --show-errors=false
 
 ...unless we move the order of the stitches around inside the knot!
 
@@ -497,6 +508,7 @@ We boarded the train, but where?\
 
 * [next]
 - (basicKnots_part_6)
+# clear
 
 <h5>3.6: Local diverts</h5>
 
@@ -519,6 +531,7 @@ The compiler will warn you if ambiguous names are used.
 
 
 * [Question 5]
+# clear
 - (Question_5)
 Q: Which of the following plays successfully without errors, nor warnings?
 
@@ -542,7 +555,7 @@ Q: Which of the following plays successfully without errors, nor warnings?
 \
 \= in_second_class\
     I put myself in second.\
-    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    \-> END</pre> # editor read-only --class-list\[\]=choice-editor --show-errors=false]
     No, do you remember that stiches outside of the knot they are defined should\
     be referenced with the knot's name? Alright, wanna try one more time?
 
@@ -566,7 +579,7 @@ Q: Which of the following plays successfully without errors, nor warnings?
 \
 \= in_second_class\
     I put myself in second.\
-    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    \-> END</pre> # editor read-only --class-list\[\]=choice-editor --show-errors=false]
     Yes, that's right. You can have the same stich name in different knots.
     ->nextChapter
 
@@ -589,7 +602,7 @@ Q: Which of the following plays successfully without errors, nor warnings?
 \
 \= in_second_class\
     I put myself in second.\
-    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    \-> END</pre> # editor read-only --class-list\[\]=choice-editor --show-errors=false]
     Did you forget about the previous question? There was a missing divert at one of the stiches. Want one more chance? Sure, why not.
 * [<pre>\-> in_first_class\
 \
@@ -611,7 +624,7 @@ Q: Which of the following plays successfully without errors, nor warnings?
 \
 \= in_second_class\
     I put myself in second.\
-    \-> END</pre> # editor read-only --class-list\[\]=editor-choice]
+    \-> END</pre> # editor read-only --class-list\[\]=choice-editor --show-errors=false]
     How do we start this story? First class of what - The Orient Express or SS Mongolia? It's not clear. So remember to always disambiguate diverts when required. Have another pass.
 -
 ->Question_5

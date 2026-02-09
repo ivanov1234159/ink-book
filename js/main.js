@@ -26,12 +26,15 @@ if (typeof customCode === "function") {
 
 buildInCode();
 
+window.addEventListener("hashchange", () => location.reload());
+
 const editor = new InkEditor({
   withCode: false,
   withPreview: true,
   readonly: false,
   id: "root",
   maxLines: 60,
+  start: location.hash ? location.hash.substring(1) : undefined,
   controls: [
     {
       key: "rewind",
