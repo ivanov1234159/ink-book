@@ -1,9 +1,9 @@
 == About
 = intro
 This digital book was started as a University project and is highly\
-inspired by <strong>ink</strong>'s own documentation - <a href="https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md">Writing with ink</a>.
+inspired by <strong>ink</strong>'s own documentation - <a href="https:/\/github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md">Writing with ink</a>.
 
-You can find a link to the GitHub repo <a href="https://github.com/ivanov1234159/ink-book">here</a>.
+You can find a link to the GitHub repo <a href="https:/\/github.com/ivanov1234159/ink-book">here</a>.
 
 The book is not finished, yet (even the design - can't tell that should be a book), and I wanted to include so much more\
 (and I will continue to add stuff whenever possible), but in the meantime here is a bonus lesson with sintax\
